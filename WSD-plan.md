@@ -116,6 +116,11 @@ We will have the following models with the following fields. The structure will 
 * GameState textfield
 * TimeStamp datetime
 
+### Purchases:
+* UserId int (FK)
+* GameId int (FK)
+
+
 ## 7. Timetable
 
 The estimate for our projects timetable is as follows:
