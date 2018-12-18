@@ -85,34 +85,34 @@ We will try to meet twice a week to work on the project face-to-face and use 6-8
 We will have the following models with the following fields. The structure will be modified as needed.
 
 ### User:
-* UserId int
+* UserId int (PK)
 * UserName varchar
 * Password varchar
 * Email varchar
 
 ### Developer:
-* DeveloperId int
+* DeveloperId int (PK)
 * Username varchar
 * Password varchar
 
 ### Score: 
-* UserId int
-* GameId int
+* UserId int (FK)
+* GameId int (FK)
 * Score int
 * Timestamp datetime
 
 ### Game:
-* GameId int
+* GameId int (PK)
 * Name varchar
-* DeveloperId int
+* DeveloperId int (FK)
 * Price decimal
 * NumberSold int
 * Genre varchar
 * DateCreated datetime
 
 ### GameState:
-* UserId int
-* GameId int
+* UserId int (FK)
+* GameId int (FK)
 * GameState textfield
 * TimeStamp datetime
 
