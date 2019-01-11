@@ -2,7 +2,7 @@
   "name": "Gamestore",
   "description": "Gamestore app file modified from one provided in tutorial",
   "image": "heroku/python",
-  "repository": "https://github.com/heroku/python-getting-started",
+  "repository": "git@version.aalto.fi:koveror1/wsd-2018-project.git",
   "keywords": ["python", "django" ],
   "addons": [ "heroku-postgresql" ],
   "env": {
