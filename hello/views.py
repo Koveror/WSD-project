@@ -6,14 +6,18 @@ def index(request):
     return HttpResponse("Hello, world. You're at the hello index.")
 
 def home(request):
-    return HttpResponse("Hello, this is home page.")
+    testilista = ['testi1', 'testi2', 'testi3']
+    context = {'dict': testilista}
+    return render(request, 'hello/home.html', context)
+    #return HttpResponse("Hello, this is home page.")
 
 def gamelist(request):
     games = Game.objects.all()
-    str = ''
-    for game in games:
-        str = str + game.name + ' '
-    return HttpResponse(str)
+    return render(request, 'hello/gamelist.html', {'list': games})
+    #str = ''
+    #for game in games:
+    #    str = str + game.name + ' '
+    #return HttpResponse(str)
 
 def score(request, gameId, userId):
     scoreObject = Score.objects.get(gameid = gameId, userid = userId)
