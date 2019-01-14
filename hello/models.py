@@ -13,13 +13,14 @@ class Game(models.Model):
     dateCreated = models.DateTimeField()
     def __str__(self):
         return self.name
+
 class Score(models.Model):
     userid = models.ForeignKey(User, on_delete= models.CASCADE)
     gameid = models.ForeignKey(Game, on_delete= models.CASCADE)
     score = models.IntegerField()
     timestamp = models.DateTimeField()
     def __str__(self):
-        return (self.gameid + ", " + self.userid + ", " + self.score)
+        return '{}, {}, {}'.format(self.gameid, self.userid, self.score)
 
 class GameState(models.Model):
     gameid = models.ForeignKey(Game, on_delete= models.CASCADE)
@@ -27,10 +28,10 @@ class GameState(models.Model):
     gameState = models.TextField()
     timestamp = models.DateTimeField()
     def __str__(self):
-        return (self.gameid + ", " + self.userid + ", " + self.gameState)
+        return '{}, {}, {}'.format(self.gameid, self.userid, self.gameState)
 
 class Purchases(models.Model):
     gameid = models.ForeignKey(Game, on_delete= models.CASCADE)
     userid = models.ForeignKey(User, on_delete= models.CASCADE)
     def __str__(self):
-        return (self.gameid + ", " + self.userid)
+        return '{}, {}'.format(self.gameid, self.userid)
