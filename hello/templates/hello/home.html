@@ -1,7 +1,28 @@
-<h1> Homepage </h1>
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Homepage</title>
+  </head>
 
-<ul>
-  {% for word in dict %}
-      <li>{{ word }}</li>
-  {% endfor %}
-</ul>
+  <body>
+    <h1> Homepage </h1>
+
+    <p> Welcome to Gamestore! Here you can buy, sell and play games. </p>
+
+    <ul class="actions">
+      <li><a href="#" class="button">Home</a></li>
+      <li><a href="#" class="button">Library</a></li>
+      <li><a href="#" class="button">Shop</a></li>
+      <li><a href="#" class="button">High scores</a></li>
+    </ul>
+
+    <ul>
+      {% for word in dict %}
+        <li>{{ word }}</li>
+      {% endfor %}
+    </ul>
+
+    <br>
+    <button id="logout">Logout</button>
+  </body>
+</html>
