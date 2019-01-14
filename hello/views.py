@@ -1,35 +1,33 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.views import generic
 from .models import Game, Score, GameState, Purchases
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the hello index.")
+class IndexView(generic.View):
 
-def home(request):
-    testilista = ['testi1', 'testi2', 'testi3']
-    context = {'dict': testilista}
-    return render(request, 'hello/home.html', context)
-    #return HttpResponse("Hello, this is home page.")
+    def get(self, request):
+        return HttpResponse("Hello, world. You're at the hello index.")
 
-def gamelist(request):
-    games = Game.objects.all()
-    return render(request, 'hello/gamelist.html', {'list': games})
-    #str = ''
-    #for game in games:
-    #    str = str + game.name + ' '
-    #return HttpResponse(str)
+class HomeView(generic.View):
 
-def score(request, gameId, userId):
-    scoreObject = Score.objects.get(gameid = gameId, userid = userId)
-    return HttpResponse(scoreObject.score)
+    def get(self, request):    
+        testlist = ['test1', 'test2', 'test3']
+        context = {'dict': testlist}
+        template_name = 'hello/home.html'
+        return render(request, template_name, context)
 
-def purchases(request, userId):
-    usersPurchases = Purchases.objects.filter(userid = userId)
-    str = ''
-    for buy in purchases:
-        str = str + buy.gameid + ' '
-    return HttpResponse(str)
+class GameListView(generic.ListView):
+    """Generic view for the list of games.
+    It creates a context called object_list to be used in templates."""
+    template_name = 'hello/gamelist.html'
+    model = Game
 
-def gamestate(request, userId, gameId):
-    state = GameState.objects.get(gameid = gameId, userid = userId)
-    return HtppResponse(state.gameState)
+class GameDetailView(generic.DetailView):
+    """Generic view for a single game."""
+    model = Game
+    template_name = 'hello/gamedetail.html'
+
+class ScoreDetailView(generic.DetailView):
+    model = Score
+    template_name = 'hello/scoredetail.html'
+

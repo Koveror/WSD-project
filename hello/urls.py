@@ -2,10 +2,11 @@ from django.urls import path
 
 from . import views
 
+app_name = 'hello'
 urlpatterns = [
-    path('index', views.index, name='index'),
-    path('home', views.home, name='home'),
-    path('gamelist', views.gamelist, name='gamelist'),
-    path('purchases', views.purchases, name='purchases'),
-    path('gamestate', views.gamestate, name='gamestate')
+    path('index', views.IndexView.as_view(), name='index'),
+    path('home', views.HomeView.as_view(), name='home'),
+    path('gamelist', views.GameListView.as_view(), name='gamelist'),
+    path('game/<int:pk>/', views.GameDetailView.as_view(), name='gamedetail'),
+    path('score/<int:pk>/', views.ScoreDetailView.as_view(), name='scoredetail')
 ]
