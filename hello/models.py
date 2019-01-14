@@ -8,7 +8,7 @@ class Game(models.Model):
     name = models.CharField(max_length=200)
     developerid = models.ForeignKey(User, on_delete= models.CASCADE)
     price = models.DecimalField(decimal_places=2, max_digits=5)
-    numberSod = models.IntegerField()
+    numberSold = models.IntegerField()
     genre = models.CharField(max_length=200)
     dateCreated = models.DateTimeField()
     def __str__(self):
@@ -19,7 +19,7 @@ class Score(models.Model):
     score = models.IntegerField()
     timestamp = models.DateTimeField()
     def __str__(self):
-        return (self.gameid, self.userid, self.score)
+        return (self.gameid + ", " + self.userid + ", " + self.score)
 
 class GameState(models.Model):
     gameid = models.ForeignKey(Game, on_delete= models.CASCADE)
@@ -27,10 +27,10 @@ class GameState(models.Model):
     gameState = models.TextField()
     timestamp = models.DateTimeField()
     def __str__(self):
-        return (self.gameid, self.userid, self.gameState)
+        return (self.gameid + ", " + self.userid + ", " + self.gameState)
 
 class Purchases(models.Model):
     gameid = models.ForeignKey(Game, on_delete= models.CASCADE)
     userid = models.ForeignKey(User, on_delete= models.CASCADE)
     def __str__(self):
-        return (self.gameid, self.userid)
+        return (self.gameid + ", " + self.userid)
