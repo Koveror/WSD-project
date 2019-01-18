@@ -99,12 +99,12 @@ class GameStateModelTest(TestCase):
         gameState='{ x: 5, y: 6 }', timestamp=timezone.now())
         self.assertEqual(gameState.gameState, '{ x: 5, y: 6 }')
 
-'''
+
 class GameStateLimitValueTests(TestCase):
     def test_game_number_sold_negative(self):
         newgamestate = GameState(gameState = '{ x: 5, y: 6 }')
-        self.assertEqual(console.log(JSON.stringify(newgamestate.gameState)), ('{"x":5,"y":6}'))
-'''
+        self.assertEqual((json.dumps(newgamestate.gameState)), ('{"x":5,"y":6}'))
+
 
 ''' Test purchases '''
 class GameStateModelTest(TestCase):
