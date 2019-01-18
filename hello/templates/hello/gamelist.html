@@ -1,7 +1,54 @@
-<h1> Gamelist </h1>
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Gamelist</title>
 
-<ul>
-  {% for game in object_list %}
-      <li>{{ game.name }}</li>
-  {% endfor %}
-</ul>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script>
+
+      //Game service's eventListener that handles messaging with a game
+      window.addEventListener("message", function(evt) {
+        if (evt.data.messageType === "LOAD_REQUEST") {
+          //Try to load gameState from database,
+          //send either LOAD or ERROR depending on the success
+
+          var msg = {
+
+          };
+          //Also send the resolution and other settings to the game
+          //once the game is loaded
+          var msg = {
+            messageType: "SETTING",
+          };
+
+        } else if (evt.data.messageType === "SCORE") {
+          //Save score to database
+
+        } else if (evt.data.messageType === "SAVE") {
+          //Save the submitted gameState into database
+
+        }
+      });
+
+    </script>
+  </head>
+  <body>
+
+    <h1>Gamelist</h1>
+
+    <ul class="actions">
+      <li><a href="home" class="button">Home</a></li>
+      <li><a href="gamelist" class="button">Gamelist/library</a></li>
+      <li><a href="shop" class="button">Shop</a></li>
+      <li><a href="#" class="button">High scores</a></li>
+    </ul>
+
+    <ul>
+      {% for game in object_list %}
+        <li>{{ game.name }}</li>
+      {% endfor %}
+    </ul>
+
+    <button id="logout">Logout</button>
+
+  </body>

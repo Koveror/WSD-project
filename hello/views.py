@@ -10,7 +10,7 @@ class IndexView(generic.View):
 
 class HomeView(generic.View):
 
-    def get(self, request):    
+    def get(self, request):
         testlist = ['test1', 'test2', 'test3']
         context = {'dict': testlist}
         template_name = 'hello/home.html'
@@ -22,6 +22,10 @@ class GameListView(generic.ListView):
     template_name = 'hello/gamelist.html'
     model = Game
 
+class ShopView(generic.ListView):
+    template_name = 'hello/shop.html'
+    model = Game
+
 class GameDetailView(generic.DetailView):
     """Generic view for a single game."""
     model = Game
@@ -30,4 +34,3 @@ class GameDetailView(generic.DetailView):
 class ScoreDetailView(generic.DetailView):
     model = Score
     template_name = 'hello/scoredetail.html'
-
