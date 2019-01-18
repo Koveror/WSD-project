@@ -22,6 +22,10 @@ class GameListView(generic.ListView):
     template_name = 'hello/gamelist.html'
     model = Game
 
+class ShopView(generic.ListView):
+    template_name = 'hello/shop.html'
+    model = Game
+
 class GameDetailView(generic.DetailView):
     """Generic view for a single game."""
     model = Game
