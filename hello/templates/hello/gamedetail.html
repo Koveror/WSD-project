@@ -1,5 +1,4 @@
-{# This page is reponsible for showing the players own game library, #}
-{# and for enabling playing them #}
+{# This page is shows an individual game embedded in an iframe#}
 
 <!DOCTYPE HTML>
 <html>
@@ -11,6 +10,7 @@
 
         window.addEventListener("message", receiveMessage, false);
 
+        //This function receives the messages sent by the game in the iframe below
         function receiveMessage(event)
         {
             str = JSON.stringify(event.data);
@@ -23,6 +23,7 @@
 
     <h1>GameDetails for {{game}}</h1>
 
+    {#Any game can be added to a page in an iframe like this#}
     <iframe src="http://webcourse.cs.hut.fi/example_game.html"></iframe>
 
     <ul class="actions">
