@@ -3,6 +3,9 @@ from django.http import HttpResponse
 from django.views import generic
 from .models import Game, Score, GameState, Purchases
 
+def save_game(request, game_id):
+    return HttpResponse("You have called save_game function")
+
 class IndexView(generic.View):
 
     def get(self, request):

@@ -10,5 +10,6 @@ urlpatterns = [
     path('gamelist', views.GameListView.as_view(), name='gamelist'),
     path('shop', views.ShopView.as_view(), name='shop'),
     path('game/<int:pk>/', views.GameDetailView.as_view(), name='gamedetail'),
+    path('<int:game_id>/save_game/', views.save_game, name='save_game'),
     path('score/<int:pk>/', views.ScoreDetailView.as_view(), name='scoredetail')
 ]
