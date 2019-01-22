@@ -13,8 +13,15 @@
         //This function receives the messages sent by the game in the iframe below
         function receiveMessage(event)
         {
-            str = JSON.stringify(event.data);
-            console.log("Received object: " + str);
+            if(event.origin !== "") {
+              //FIXME: Only execute messages from trustworthy sources
+            }
+            message = JSON.stringify(event.data);
+            console.log("Received object: " + message);
+
+            if(event.data.messageType == "SAVE") {
+              $("#save_form").submit();
+            }
         }
 
     </script>
@@ -25,6 +32,10 @@
 
     {#Any game can be added to a page in an iframe like this#}
     <iframe src="http://webcourse.cs.hut.fi/example_game.html"></iframe>
+
+    <form action="{% url 'hello:save_game' game.gameid%}" method="post" id="save_form">
+      {% csrf_token %}
+    </form>
 
     <ul class="actions">
       <li><a href="home" class="button">Home</a></li>
