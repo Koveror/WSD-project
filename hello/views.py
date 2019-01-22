@@ -22,6 +22,18 @@ class GameListView(generic.ListView):
     template_name = 'hello/gamelist.html'
     model = Game
 
+class DeveloperView(generic.View):
+
+    def get(self, request):
+        testlist = ['test1', 'test2', 'test3']
+        context = {'dict': testlist}
+        template_name = 'hello/developer.html'
+        return render(request, template_name, context)
+
+class HighScoreView(generic.ListView):
+    template_name = 'hello/highscores.html'
+    model = Score
+
 class ShopView(generic.ListView):
     template_name = 'hello/shop.html'
     model = Game
