@@ -1,1 +1,38 @@
-<h1> {{game}} </h1>
+{# This page is shows an individual game embedded in an iframe#}
+
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>GameDetail</title>
+
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script>
+
+        window.addEventListener("message", receiveMessage, false);
+
+        //This function receives the messages sent by the game in the iframe below
+        function receiveMessage(event)
+        {
+            str = JSON.stringify(event.data);
+            console.log("Received object: " + str);
+        }
+
+    </script>
+  </head>
+  <body>
+
+    <h1>GameDetails for {{game}}</h1>
+
+    {#Any game can be added to a page in an iframe like this#}
+    <iframe src="http://webcourse.cs.hut.fi/example_game.html"></iframe>
+
+    <ul class="actions">
+      <li><a href="home" class="button">Home</a></li>
+      <li><a href="gamelist" class="button">Gamelist</a></li>
+      <li><a href="shop" class="button">Shop</a></li>
+      <li><a href="#" class="button">High scores</a></li>
+    </ul>
+
+    <button id="logout">Logout</button>
+
+  </body>
