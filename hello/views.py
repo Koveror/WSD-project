@@ -31,6 +31,11 @@ class DeveloperView(generic.View):
 
     @login_required
     @user_passes_test(lambda u: u.groups.filter(name='Developer').count() == 0, login_url='/hello/denied/')
+    def not_in_developer_group(self, user):
+        if user:
+            return user.groups.filter(name='Developer').count() == 0
+        return False
+        
     def get(self, request):
         testlist = ['test1', 'test2', 'test3']
         context = {'dict': testlist}
