@@ -21,6 +21,7 @@
 
             if(event.data.messageType == "SAVE") {
               $("#save_form").submit();
+              //TODO: AJAX here
             }
         }
 
@@ -33,7 +34,7 @@
     {#Any game can be added to a page in an iframe like this#}
     <iframe src="http://webcourse.cs.hut.fi/example_game.html"></iframe>
 
-    <form action="{% url 'hello:save_game' game.gameid%}" method="post" id="save_form">
+    <form action="{% url 'hello:save_game' game.gameid %}" method="post" id="save_form">
       {% csrf_token %}
     </form>
 
