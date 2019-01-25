@@ -1,14 +1,14 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+import json
+from datetime import datetime
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, JsonResponse
 from django.views import generic
 from .models import Game, Score, GameState, Purchases
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
-
-
-#def save_game(request, game_id):
-#    return HttpResponse("You have called save_game function")
 
 class IndexView(generic.View):
 
@@ -30,6 +30,13 @@ class GameListView(generic.ListView):
     model = Game
 
 class DeveloperView(generic.View):
+
+    @login_required
+    @user_passes_test(lambda u: u.groups.filter(name='Developer').count() == 0, login_url='/hello/denied/')
+    def not_in_developer_group(self, user):
+        if user:
+            return user.groups.filter(name='Developer').count() == 0
+        return False
 
     def get(self, request):
 
@@ -58,17 +65,34 @@ class GameDetailView(generic.DetailView):
     model = Game
     template_name = 'hello/gamedetail.html'
 
-    def save_game(self, **kwargs):
-        return HttpResponse("You have called in class save_game function " + str(self.request.user))
-
 class GameSaveView(generic.DetailView):
-    """Generic view for a single game."""
+    """View for saving gamestates. The save message is posted to this view using ajax."""
     model = Game
     template_name = 'hello/gamedetail.html'
 
+    #FIXME: Check for login
+    #@login_required
     def post(self, *args, **kwargs):
+        """Method for saving data"""
+        message = json.loads(self.request.body)
+        game_state_str = str(message.get('gameState'))
 
-        return HttpResponse("You have called in class save_game function " +str(kwargs) + str(self.request.user))
+        #FIXME: Find correct user and game!
+        #FIXME: Try-catch here
+        user = User.objects.get(id = 1)
+        game = Game.objects.get(gameid = 1)
+
+        game_state = GameState(
+            userid = user,
+            gameid = game,
+            gameState = game_state_str,
+            timestamp = datetime.now()
+        )
+
+        game_state.save()
+
+        save_message = {'message' : 'Successfully saved'}
+        return JsonResponse(save_message)
 
 
 class ScoreDetailView(generic.DetailView):
@@ -102,12 +126,22 @@ class LogoutView(generic.View):
     def get(self, request):
         logout(request)
         # Redirect to a success page.
-        context = {'msg': "This is not used for anything"}
+        context = {'msg': "Logout succesful"}
         return render(request, 'hello/logout.html', context)
 
-class RegisterView(generic.View):
 
-    def get(self, request):
-        context = {'msg': "Please enter a username and a password"}
-        template_name = 'hello/register.html'
-        return render(request, template_name, context)
+class SignupView(generic.View):
+    def signup(self, request):
+        template_name = 'hello/signup.html'
+        if request.method == 'POST':
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                username = form.cleaned_data.get('username')
+                raw_password = form.cleaned_data.get('password1')
+                user = authenticate(username=username, password=raw_password)
+                login(request, user)
+                return redirect('home')
+        else:
+            form = UserCreationForm()
+        return render(request, 'signup.html', {'form': form})

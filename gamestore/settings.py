@@ -136,3 +136,5 @@ if "DYNO" in os.environ:
 
     #Override allowed hosts to only allow hosting on our site
     ALLOWED_HOSTS = ['frozen-meadow-25693.herokuapp.com']
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
