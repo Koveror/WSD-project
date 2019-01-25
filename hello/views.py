@@ -80,8 +80,7 @@ class LoginView(generic.View):
             return HttpResponse("Invalid login")
 
 class LogoutView(generic.View):
-    def logout_view(request):
-    logout(request)
-    # Redirect to a success page.
-    return HttpResponse("Logout succesful")
-
+    def logout_view(self, request):
+        logout(request)
+        # Redirect to a success page.
+        return HttpResponse("Logout succesful")
