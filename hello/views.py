@@ -3,8 +3,8 @@ from django.http import HttpResponse
 from django.views import generic
 from .models import Game, Score, GameState, Purchases
 
-def save_game(request, game_id):
-    return HttpResponse("You have called save_game function")
+#def save_game(request, game_id):
+#    return HttpResponse("You have called save_game function")
 
 class IndexView(generic.View):
 
@@ -33,6 +33,19 @@ class GameDetailView(generic.DetailView):
     """Generic view for a single game."""
     model = Game
     template_name = 'hello/gamedetail.html'
+
+    def save_game(self, **kwargs):
+        return HttpResponse("You have called in class save_game function " + str(self.request.user))
+
+class GameSaveView(generic.DetailView):
+    """Generic view for a single game."""
+    model = Game
+    template_name = 'hello/gamedetail.html'
+
+    def post(self, *args, **kwargs):
+        
+        return HttpResponse("You have called in class save_game function " +str(kwargs) + str(self.request.user))
+
 
 class ScoreDetailView(generic.DetailView):
     model = Score

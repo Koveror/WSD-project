@@ -2,6 +2,8 @@ from django.urls import path
 
 from . import views
 
+#FIXME: Slugs for urls
+
 app_name = 'hello'
 urlpatterns = [
     path('index', views.IndexView.as_view(), name='index'),
@@ -10,6 +12,6 @@ urlpatterns = [
     path('gamelist', views.GameListView.as_view(), name='gamelist'),
     path('shop', views.ShopView.as_view(), name='shop'),
     path('game/<int:pk>/', views.GameDetailView.as_view(), name='gamedetail'),
-    path('<int:game_id>/save_game/', views.save_game, name='save_game'),
+    path('save_game/<int:pk>/', views.GameSaveView.as_view(), name='save_game'),
     path('score/<int:pk>/', views.ScoreDetailView.as_view(), name='scoredetail')
 ]
