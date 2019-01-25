@@ -30,7 +30,7 @@ class GameListView(generic.ListView):
 class DeveloperView(generic.View):
 
     @login_required
-    @user_passes_test(lambda u: u.groups.filter(name='Developer').count() == 0, login_url='/myapp/denied/')
+    @user_passes_test(lambda u: u.groups.filter(name='Developer').count() == 0, login_url='/hello/denied/')
     def get(self, request):
         testlist = ['test1', 'test2', 'test3']
         context = {'dict': testlist}
@@ -87,3 +87,4 @@ class LogoutView(generic.View):
         logout(request)
         # Redirect to a success page.
         return HttpResponse("Logout succesful")
+
