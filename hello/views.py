@@ -1,14 +1,13 @@
+import json
+from datetime import datetime
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views import generic
 from .models import Game, Score, GameState, Purchases
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import UserCreationForm
-
-
-#def save_game(request, game_id):
-#    return HttpResponse("You have called save_game function")
+from django.contrib.auth.models import User
 
 class IndexView(generic.View):
 
@@ -57,18 +56,34 @@ class GameDetailView(generic.DetailView):
     model = Game
     template_name = 'hello/gamedetail.html'
 
-    def save_game(self, **kwargs):
-        return HttpResponse("You have called in class save_game function " + str(self.request.user))
-
 class GameSaveView(generic.DetailView):
-    """Generic view for a single game."""
+    """View for saving gamestates. The save message is posted to this view using ajax."""
     model = Game
     template_name = 'hello/gamedetail.html'
 
-    @login_required
+    #FIXME: Check for login
+    #@login_required
     def post(self, *args, **kwargs):
-        
-        return HttpResponse("You have called in class save_game function " +str(kwargs) + str(self.request.user))
+        """Method for saving data"""
+        message = json.loads(self.request.body)
+        game_state_str = str(message.get('gameState'))
+
+        #FIXME: Find correct user and game!
+        #FIXME: Try-catch here
+        user = User.objects.get(id = 1)
+        game = Game.objects.get(gameid = 1)
+
+        game_state = GameState(
+            userid = user,
+            gameid = game,
+            gameState = game_state_str,
+            timestamp = datetime.now()
+        )
+
+        game_state.save()
+
+        save_message = {'message' : 'Successfully saved'}
+        return JsonResponse(save_message)
 
 
 class ScoreDetailView(generic.DetailView):
