@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.views import generic
 from .models import Game, Score, GameState, Purchases
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 #def save_game(request, game_id):
 #    return HttpResponse("You have called save_game function")
@@ -29,6 +29,8 @@ class GameListView(generic.ListView):
 
 class DeveloperView(generic.View):
 
+    @login_required
+    @user_passes_test(lambda u: u.groups.filter(name='Developer').count() == 0, login_url='/myapp/denied/')
     def get(self, request):
         testlist = ['test1', 'test2', 'test3']
         context = {'dict': testlist}
@@ -56,6 +58,7 @@ class GameSaveView(generic.DetailView):
     model = Game
     template_name = 'hello/gamedetail.html'
 
+    @login_required
     def post(self, *args, **kwargs):
         
         return HttpResponse("You have called in class save_game function " +str(kwargs) + str(self.request.user))
