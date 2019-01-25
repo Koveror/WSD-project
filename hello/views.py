@@ -4,6 +4,8 @@ from django.views import generic
 from .models import Game, Score, GameState, Purchases
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
+
 
 #def save_game(request, game_id):
 #    return HttpResponse("You have called save_game function")
@@ -30,10 +32,18 @@ class GameListView(generic.ListView):
 class DeveloperView(generic.View):
 
     def get(self, request):
-        testlist = ['test1', 'test2', 'test3']
-        context = {'dict': testlist}
+
+        def is_member(user):
+            return user.groups.filter(name='Developer').exists()
+
+        def make_developer(user):
+            my_group = Group.objects.get(name='Developer')
+            my_group.user_set.add(user)
+
+        context = {'is_a_developer': is_member(request.user)}
         template_name = 'hello/developer.html'
         return render(request, template_name, context)
+
 
 class HighScoreView(generic.ListView):
     template_name = 'hello/highscores.html'
@@ -57,7 +67,7 @@ class GameSaveView(generic.DetailView):
     template_name = 'hello/gamedetail.html'
 
     def post(self, *args, **kwargs):
-        
+
         return HttpResponse("You have called in class save_game function " +str(kwargs) + str(self.request.user))
 
 
@@ -65,8 +75,14 @@ class ScoreDetailView(generic.DetailView):
     model = Score
     template_name = 'hello/scoredetail.html'
 
+
 class LoginView(generic.View):
-    def login(self, request):
+    def get(self, request):
+        context = {'msg': "Please enter a username and a password"}
+        template_name = 'hello/login.html'
+        return render(request, template_name, context)
+
+    def post(self, request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
@@ -74,13 +90,24 @@ class LoginView(generic.View):
         if user is not None:
             login(request, user)
             # Redirect to a success page.
-            return HttpResponse("Login succesful")
+            context = {'msg': "Login succesful"}
+            return render(request, 'hello/home.html', context)
         else:
             # Return an 'invalid login' error message.
-            return HttpResponse("Invalid login")
+            context = {'msg': "Invalid login"}
+            return render(request, 'hello/login.html', context)
 
 class LogoutView(generic.View):
-    def logout_view(self, request):
+
+    def get(self, request):
         logout(request)
         # Redirect to a success page.
-        return HttpResponse("Logout succesful")
+        context = {'msg': "This is not used for anything"}
+        return render(request, 'hello/logout.html', context)
+
+class RegisterView(generic.View):
+
+    def get(self, request):
+        context = {'msg': "Please enter a username and a password"}
+        template_name = 'hello/register.html'
+        return render(request, template_name, context)
