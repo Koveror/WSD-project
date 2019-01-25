@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import generic
 from .models import Game, Score, GameState, Purchases
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 def save_game(request, game_id):
     return HttpResponse("You have called save_game function")
@@ -49,3 +51,18 @@ class GameDetailView(generic.DetailView):
 class ScoreDetailView(generic.DetailView):
     model = Score
     template_name = 'hello/scoredetail.html'
+
+class LoginView(generic.View):
+    def login(self, request):
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        template_name = 'hello/login.html'
+        if user is not None:
+            login(request, user)
+            # Redirect to a success page.
+            return HttpResponse("Login succesful")
+        else:
+            # Return an 'invalid login' error message.
+            return HttpResponse("Invalid login")
+

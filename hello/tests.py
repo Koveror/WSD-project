@@ -103,7 +103,7 @@ class GameStateModelTest(TestCase):
 class GameStateLimitValueTests(TestCase):
     def test_game_number_sold_negative(self):
         newgamestate = GameState(gameState = '{ x: 5, y: 6 }')
-        self.assertEqual((json.dumps(newgamestate.gameState)), ('{"x":5,"y":6}'))
+        self.assertEqual((json.dumps(newgamestate.gameState)), ({"x":5,"y":6}))
 
 
 ''' Test purchases '''

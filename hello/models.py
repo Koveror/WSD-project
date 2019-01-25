@@ -23,7 +23,7 @@ class Game(models.Model):
 class Score(models.Model):
     userid = models.ForeignKey(User, on_delete= models.CASCADE)
     gameid = models.ForeignKey(Game, on_delete= models.CASCADE)
-    score = models.IntegerField(validators=[validate_positive])
+    score = models.IntegerField(default = 0, validators=[validate_positive])
     timestamp = models.DateTimeField()
     def __str__(self):
         return '{}, {}, {}'.format(self.gameid, self.userid, self.score)
