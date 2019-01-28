@@ -99,7 +99,6 @@
     <main role="main">
       <br>
       <br>
-      {% for game in object_list %}
         <div class="album py-5 bg-light">
           <div class="container">
             <div class="row">
@@ -110,10 +109,12 @@
                     <p class="card-text">This is an awesome game. It belongs to {{game.genre}} genre.</p>
                     <div class="d-flex justify-content-between align-items-center">
                       <div class="btn-group">
-                        <button type="button" id="buy" class="btn btn-sm btn-outline-secondary">Buy game
+                        <button type="button" id="buy" class="btn btn-sm btn-outline-secondary">
                             <div><form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST">
+                              <input type="hidden" name="secret_key" value="e8b85ecb66f9c98f05da54430b5215be" />
+                              <input type="hidden" name="amount" value={{game.price}} />
                               <input type="hidden" name="pid" value="payment1" />
-                              <input type="hidden" name="sid" value="groupBest" />
+                              <input type="hidden" name="sid" value="virvanikoristo" />
                               <input type="hidden" name="success_url"
                                       value="http://localhost:8000/payment/success" />
                               <input type="hidden" name="cancel_url"
@@ -121,11 +122,9 @@
                               <input type="hidden" name="error_url"
                                       value="http://localhost:8000/payment/error" />
                               <input type="hidden" name="checksum"
-                                      value="ee306a1dec60d40534391106f7855434" />
-                          
-                              <label for="id_amount">{{game.price}} €</label>
-                              
-                              <input type="submit" value="Accept Payment"/>
+                                      value="pid={}&sid={}&amount={}&token={}".format(pid, sid, amount, secret_key) />
+                              <label for="id_amount">{{game.price}} €</label> 
+                              <input type="submit" value="Buy game"/>
                           </form></div>
                         </button>
                       </div>
