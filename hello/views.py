@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class IndexView(generic.View):
 
@@ -30,27 +31,42 @@ class GameListView(generic.ListView):
     template_name = 'hello/gamelist.html'
     model = Game
 
-class DeveloperView(generic.View):
-
-    @login_required
-    @user_passes_test(lambda u: u.groups.filter(name='Developer').count() == 0, login_url='/hello/denied/')
-    def not_in_developer_group(self, user):
-        if user:
-            return user.groups.filter(name='Developer').count() == 0
-        return False
-
+class DeveloperView(LoginRequiredMixin, generic.View):
+    login_url = 'hello:login'
+    #edirect_field_name = 'hello/login.html'
     def get(self, request):
 
-        def is_member(user):
-            return user.groups.filter(name='Developer').exists()
+        #Test if user belongs to developer-group
+        is_member = request.user.groups.filter(name='Developer').exists()
 
+        #Generate a list of developer's games
+        games = Game.objects.filter(developerid=request.user)
+
+        #Add the user to the developer-group
         def make_developer(user):
             my_group = Group.objects.get(name='Developer')
             my_group.user_set.add(user)
 
-        context = {'is_a_developer': is_member(request.user)}
+        context = {'is_a_developer': is_member, 'games': games}
         template_name = 'hello/developer.html'
         return render(request, template_name, context)
+
+    def post(self, request):
+        name = request.POST['name']
+        price = request.POST['price']
+        genre = request.POST['genre']
+        URL = request.POST['URL']
+        newgame = Game.objects.create(name=name,
+                       price=price,
+                       genre=genre,
+                       URL=URL,
+                       developerid=request.user,
+                       numberSold=0,
+                       dateCreated=datetime.now(),
+                       )
+        context = {'msg': 'You succesfully added a game'}
+        return render(request, 'hello/developer.html', context)
+
 
 
 class HighScoreView(generic.ListView):
@@ -115,7 +131,7 @@ class LoginView(generic.View):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
-        template_name = 'hello/login.html'
+
         if user is not None:
             login(request, user)
             # Redirect to a success page.
