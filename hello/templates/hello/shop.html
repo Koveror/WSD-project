@@ -110,9 +110,25 @@
                     <p class="card-text">This is an awesome game. It belongs to {{game.genre}} genre.</p>
                     <div class="d-flex justify-content-between align-items-center">
                       <div class="btn-group">
-                        <button type="button" id="buy" class="btn btn-sm btn-outline-secondary">Buy (Fix me)</button>
+                        <button type="button" id="buy" class="btn btn-sm btn-outline-secondary">Buy game
+                            <div><form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST">
+                              <input type="hidden" name="pid" value="payment1" />
+                              <input type="hidden" name="sid" value="groupBest" />
+                              <input type="hidden" name="success_url"
+                                      value="http://localhost:8000/payment/success" />
+                              <input type="hidden" name="cancel_url"
+                                      value="http://localhost:8000/payment/cancel" />
+                              <input type="hidden" name="error_url"
+                                      value="http://localhost:8000/payment/error" />
+                              <input type="hidden" name="checksum"
+                                      value="ee306a1dec60d40534391106f7855434" />
+                          
+                              <label for="id_amount">{{game.price}} €</label>
+                              
+                              <input type="submit" value="Accept Payment"/>
+                          </form></div>
+                        </button>
                       </div>
-                      <small class="text-muted">9 mins</small>
                     </div>
                   </div>
                 </div>
