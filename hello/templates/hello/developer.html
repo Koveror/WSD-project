@@ -88,15 +88,31 @@
       <br>
       <br>
       <br>
-      {% if user.is_authenticated %}
-        {% if is_a_developer %}
-          <p> Congrats, you are a developer! </p>
-        {% else %}
-          <p> You are not yet a developer. Would you like to become one? </p>
-          <p> (Fix me) </p>
-        {% endif %}
+
+      {% if is_a_developer %}
+        <p> Below you can add a game </p>
+
+        <form method="post" action="developer">
+          {% csrf_token %}
+          Name: <input type="text" name="name"><br>
+          Price: <input type="text" name="price"><br>
+          Genre: <input type="text" name="genre"><br>
+          URL: <input type="text" name="URL"><br>
+          <input type="submit" value="Submit">
+        </form>
+        <br>
+        <p> Sale statistics of your games </p>
+
+        <div class="row mb-3">
+          {% for game in games %}
+            {# remember to check if list element looks better than grid #}
+            <div class="col-6 col-md-4 themed-grid-col">{{game.name}}: {{game.numberSold}}</div>
+          {% endfor %}
+        </div>
+
       {% else %}
-        <p> Please login </p>
+        <p> You are not yet a developer. Would you like to become one? </p>
+        <button id="become_developer">Yes</button>
       {% endif %}
     </main><!-- /.container -->
 
