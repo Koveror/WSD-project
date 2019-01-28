@@ -3,6 +3,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views import generic
+import django.core.exceptions
 from .models import Game, Score, GameState, Purchases
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -90,25 +91,29 @@ class GameSaveView(generic.DetailView):
     #@login_required
     def post(self, *args, **kwargs):
         """Method for saving data"""
-        message = json.loads(self.request.body)
-        game_state_str = str(message.get('gameState'))
+        try:
+            message = json.loads(self.request.body)
+            game_state_str = str(message.get('gameState'))
 
-        #FIXME: Find correct user and game!
-        #FIXME: Try-catch here
-        user = User.objects.get(id = 1)
-        game = Game.objects.get(gameid = 1)
+            gameid = self.kwargs['pk']
+            game = Game.objects.get(gameid = gameid)
 
-        game_state = GameState(
-            userid = user,
-            gameid = game,
-            gameState = game_state_str,
-            timestamp = datetime.now()
-        )
+            game_state = GameState(
+                userid = self.request.user,
+                gameid = game,
+                gameState = game_state_str,
+                timestamp = datetime.now()
+            )
 
-        game_state.save()
+            game_state.save()
 
-        save_message = {'message' : 'Successfully saved'}
-        return JsonResponse(save_message)
+            save_message = {'message' : 'Successfully saved'}
+            return JsonResponse(save_message)
+        except:     #FIXME: Generic exception handler
+            save_message = {'message' : 'Something went wrong'}
+            return JsonResponse(save_message)
+
+        
 
 
 class ScoreDetailView(generic.DetailView):
