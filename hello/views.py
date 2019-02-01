@@ -202,13 +202,16 @@ class SignupView(generic.View):
 class BuyGameView(generic.View):
 
     def get(self, *args, **kwargs):
+        #Get a page with the form required for payment.
+        #Form is automatically submitted and customer is redirected to payment service.
 
         template_name = "hello/buygame.html"
 
-        secret_key = "Not a secret key"
-        sid = "Not sid"
-        pid = "Not pid"
-        amount = "Some amount"
+        #FIXME: Read these from somewhere
+        secret_key = "INSERT SECRET KEY"
+        sid = "INSERT SID"
+        pid = "INSERT PID"
+        amount = "INSERT AMOUNT"
         checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, sid, amount, secret_key)
         m = md5(checksumstr.encode("ascii"))
         checksum = m.hexdigest()
