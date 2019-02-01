@@ -97,7 +97,8 @@
     <h1>GameDetails for {{game}}</h1>
 
     {#Any game can be added to a page in an iframe like this#}
-    <iframe src="http://webcourse.cs.hut.fi/example_game.html"></iframe>
+    {# Example game: <iframe src="http://webcourse.cs.hut.fi/example_game.html"></iframe> #}
+    <iframe src="https://www.tetrisfriends.com/games/Marathon/game.php" width="1000" height="500"></iframe>
 
     {#This form is only used to create the URL to the page. Check listen_game.js for details.#}
     <form url="{% url 'hello:save_game' game.gameid %}" method="post" id="save_form">

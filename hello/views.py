@@ -38,29 +38,28 @@ class GameListView(LoginRequiredMixin, generic.View):
 
 class DeveloperView(LoginRequiredMixin, generic.View):
     login_url = 'hello:login'
-    
-    def get(self, request):
 
+    #Add the user to the developer-group
+    def make_developer(user):
+        my_group = Group.objects.get(name='Developer')
+        my_group.user_set.add(user)
+
+    def get(self, request):
         #Test if user belongs to developer-group
         is_member = request.user.groups.filter(name='Developer').exists()
-
         #Generate a list of developer's games
         games = Game.objects.filter(developerid=request.user)
 
-        #Add the user to the developer-group
-        def make_developer(user):
-            my_group = Group.objects.get(name='Developer')
-            my_group.user_set.add(user)
-
         context = {'is_a_developer': is_member, 'games': games}
-        template_name = 'hello/developer.html'
-        return render(request, template_name, context)
+        return render(request, 'hello/developer.html', context)
 
     def post(self, request):
+        #Create a new game
         name = request.POST['name']
         price = request.POST['price']
         genre = request.POST['genre']
         URL = request.POST['URL']
+        description = request.POST['description']
         newgame = Game.objects.create(name=name,
                        price=price,
                        genre=genre,
@@ -68,10 +67,14 @@ class DeveloperView(LoginRequiredMixin, generic.View):
                        developerid=request.user,
                        numberSold=0,
                        dateCreated=datetime.now(),
+                       description=description
                        )
-        context = {'msg': 'You succesfully added a game'}
+        #Test if user belongs to developer-group
+        is_member = request.user.groups.filter(name='Developer').exists()
+        #Generate a list of developer's games
+        games = Game.objects.filter(developerid=request.user)
+        context = {'is_a_developer': is_member, 'games': games, 'msg': 'You succesfully added a game'}
         return render(request, 'hello/developer.html', context)
-
 
 
 class HighScoreView(generic.ListView):
