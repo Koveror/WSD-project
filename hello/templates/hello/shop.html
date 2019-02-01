@@ -118,22 +118,9 @@
                       <div class="btn-group">
                         <button type="button" id="buy" class="btn btn-sm btn-outline-secondary">Buy game
 
-                            <div><form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST">
-                              <input type="hidden" name="secret_key" value="e8b85ecb66f9c98f05da54430b5215be" />
-                              <input type="hidden" name="amount" value={{game.price}} />
-                              <input type="hidden" name="pid" value="payment1" />
-                              <input type="hidden" name="sid" value="virvanikoristo" />
-                              <input type="hidden" name="success_url"
-                                      value="http://localhost:8000/payment/success" />
-                              <input type="hidden" name="cancel_url"
-                                      value="http://localhost:8000/payment/cancel" />
-                              <input type="hidden" name="error_url"
-                                      value="http://localhost:8000/payment/error" />
-                              <input type="hidden" name="checksum"
-                                      value="pid={}&sid={}&amount={}&token={}".format(pid, sid, amount, secret_key) />
-                              <label for="id_amount">{{game.price}} €</label>
-                              <input type="submit" value="Buy game"/>
-                          </form></div>
+                            <a href="{% url 'hello:buy_game' game.gameid %}" class="button">CLICK ME</a>
+
+                            <div></div>
                         </button>
                       </div>
                     </div>
