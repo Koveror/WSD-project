@@ -97,8 +97,37 @@ class GameSaveView(generic.DetailView):
             save_message = {'message' : 'Something went wrong'}
             return JsonResponse(save_message)
 
-        
+class SubmitScoreView(generic.DetailView):
+    model = Score
+    template_name = 'hello/scoredetail.html'
 
+    def post(self, *args, **kwargs):
+
+        #FIXME: Check for login here
+        #@login_required
+        try:
+            message = json.loads(self.request.body)
+            user_score = message.get('score')
+
+            gameid = self.kwargs['pk']
+            game = Game.objects.get(gameid = gameid)
+
+            score = Score(
+                userid = self.request.user,
+                gameid = game,
+                score = user_score,
+                timestamp = datetime.now()
+            )
+            score.save()
+
+            save_message = {'message' : 'Successfully saved'}
+            return JsonResponse(save_message)
+        except:     #FIXME: Generic exception handler
+            save_message = {'message' : 'Something went wrong'}
+            return JsonResponse(save_message)
+
+        save_message = {'message' : 'Submit score called successfully'}
+        return JsonResponse(save_message)
 
 class ScoreDetailView(generic.DetailView):
     model = Score

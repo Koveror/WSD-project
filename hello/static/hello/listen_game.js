@@ -42,9 +42,11 @@ function receiveMessage(event)
 
     if(event.data.messageType == "SAVE") {
         saveGame();
-    } else if(event.data.messageType == "LOAD_REQUEST") {
+    }
+    if(event.data.messageType == "LOAD_REQUEST") {
         loadGame();
-    } else if(event.data.messagetype == "SCORE") {
+    }
+    if(event.data.messageType == "SCORE") {
         submitScore();
     }
 }
@@ -82,6 +84,16 @@ function loadGame() {
 
 //Save score to the database
 function submitScore() {
+    var form = $("#score_form");
+    var url = form.attr('url');
 
+    $.ajax({
+    type: "POST",
+    url: url,
+    data: JSON.stringify(event.data),
+    dataType: "json"
+    }).done(function(save_message) {
+    alert(save_message.message);
+    });
 }
     

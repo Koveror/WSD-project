@@ -24,6 +24,10 @@
       {% csrf_token %}
     </form>
 
+    <form url="{% url 'hello:submit_score' game.gameid %}" method="post" id="score_form">
+      {% csrf_token %}
+    </form>
+
     <ul class="actions">
       <li><a href="home" class="button">Home</a></li>
       <li><a href="gamelist" class="button">Gamelist</a></li>
