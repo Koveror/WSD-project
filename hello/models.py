@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import uuid
 
 from django.core.exceptions import ValidationError
 
@@ -13,7 +14,7 @@ def validate_positive(value):
 
 class Game(models.Model):
 
-    gameid = models.IntegerField(primary_key=True)
+    gameid = models.IntegerField(primary_key=True, unique=True, default=uuid.uuid4)
     name = models.CharField(max_length=200)
     developerid = models.ForeignKey(User, on_delete= models.CASCADE)
     price = models.DecimalField(decimal_places=2, max_digits=5,validators=[validate_positive])
@@ -43,6 +44,7 @@ class GameState(models.Model):
         return '{}, {}, {}'.format(self.gameid, self.userid, self.gameState)
 
 class Purchases(models.Model):
+    pid = models.IntegerField(primary_key=True, unique=True)
     gameid = models.ForeignKey(Game, on_delete= models.CASCADE)
     userid = models.ForeignKey(User, on_delete= models.CASCADE)
     def __str__(self):
