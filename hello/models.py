@@ -20,8 +20,10 @@ class Game(models.Model):
     numberSold = models.IntegerField(default=0,validators=[validate_positive])
     genre = models.CharField(max_length=200)
     dateCreated = models.DateTimeField()
+    URL = models.CharField(max_length=200)
     def __str__(self):
         return self.name
+
 
 class Score(models.Model):
     userid = models.ForeignKey(User, on_delete= models.CASCADE)
@@ -49,11 +51,3 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email_confirmed = models.BooleanField(default=False)
     # other fields...
-
-    @receiver(post_save, sender=User)
-    def update_user_profile(self, sender, instance, created, **kwargs):
-        if created:
-            Profile.objects.create(user=instance)
-        instance.profile.save()
-
-        
