@@ -184,8 +184,9 @@ class LogoutView(generic.View):
 
 
 class SignupView(generic.View):
+    
     def signup(self, request):
-        template_name = 'hello/signup.html'
+        template_name = 'hello/register.html'
         if request.method == 'POST':
             form = UserCreationForm(request.POST)
             if form.is_valid():
