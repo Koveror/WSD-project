@@ -89,16 +89,48 @@
       <br>
       <br>
 
-      {% if is_a_developer %}
+      {% if not is_a_developer %}
+        <p> You are not yet a developer. Would you like to become one? </p>
+        <button id="become_developer">Yes</button>
+      {% else %}
+        {{msg}}
         <p> Below you can add a game </p>
 
         <form method="post" action="developer">
           {% csrf_token %}
           Name: <input type="text" name="name"><br>
           Price: <input type="text" name="price"><br>
-          Genre: <input type="text" name="genre"><br>
           URL: <input type="text" name="URL"><br>
-          <input type="submit" value="Submit">
+          Description: <input type="text" name="description"><br>
+          Primary genre:
+                        <select name="primarygenre">
+                          <option value="other">Other</option>
+                          <option value="shooter">Shooter</option>
+                          <option value="puzzle">Puzzle</option>
+                          <option value="fighting">Fighting</option>
+                          <option value="RPG">RPG</option>
+                          <option value="strategy">Strategy</option>
+                          <option value="platformer">Platformer</option>
+                          <option value="casual">Casual</option>
+                          <option value="party">Party</option>
+                          <option value="survival">Survival</option>
+                          <option value="multiplayer">Multiplayer</option>
+                        </select><br>
+          Secondary genre (optional):
+                        <select name="secondarygenre">
+                          <option value="none"></option>
+                          <option value="shooter">Shooter</option>
+                          <option value="puzzle">Puzzle</option>
+                          <option value="fighting">Fighting</option>
+                          <option value="RPG">RPG</option>
+                          <option value="strategy">Strategy</option>
+                          <option value="platformer">Platformer</option>
+                          <option value="casual">Casual</option>
+                          <option value="party">Party</option>
+                          <option value="survival">Survival</option>
+                          <option value="multiplayer">Multiplayer</option>
+                        </select><br>
+                        <input type="submit" value="Submit">
         </form>
         <br>
         <p> Sale statistics of your games </p>
@@ -109,10 +141,6 @@
             <div class="col-6 col-md-4 themed-grid-col">{{game.name}}: {{game.numberSold}}</div>
           {% endfor %}
         </div>
-
-      {% else %}
-        <p> You are not yet a developer. Would you like to become one? </p>
-        <button id="become_developer">Yes</button>
       {% endif %}
     </main><!-- /.container -->
 

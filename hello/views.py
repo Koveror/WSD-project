@@ -55,17 +55,19 @@ class DeveloperView(LoginRequiredMixin, generic.View):
         #Create a new game
         name = request.POST['name']
         price = request.POST['price']
-        genre = request.POST['genre']
         URL = request.POST['URL']
         description = request.POST['description']
+        primarygenre = request.POST['primarygenre']
+        secondarygenre = request.POST['secondarygenre']
         newgame = Game.objects.create(name=name,
                        price=price,
-                       genre=genre,
                        URL=URL,
                        developerid=request.user,
                        numberSold=0,
                        dateCreated=datetime.now(),
-                       description=description
+                       description=description,
+                       primarygenre=primarygenre,
+                       secondarygenre=secondarygenre
                        )
         #Test if user belongs to developer-group
         is_member = request.user.groups.filter(name='Developer').exists()
@@ -187,7 +189,7 @@ class LogoutView(generic.View):
 
 
 class SignupView(generic.View):
-    
+
     def signup(self, request):
         template_name = 'hello/register.html'
         if request.method == 'POST':

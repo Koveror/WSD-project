@@ -105,7 +105,10 @@
                     <img src="{% static "hello/tetris_img.jpg" %}" alt="My image" height="250" width="348">
 
                     <div class="card-body">
-                      <p class="card-text">Genre: {{purchase.gameid.genre}}</p>
+                      <p class="card-text">Primary genre: {{purchase.gameid.primarygenre}}</p>
+                      {% if purchase.gameid.secondarygenre %}
+                        <p class="card-text">Secondary genre: {{purchase.gameid.secondarygenre}}</p>
+                      {% endif %}
                       <p>Description: {{purchase.gameid.description}}</p>
                       <div class="d-flex justify-content-between align-items-center">
                         <div class="btn-group">
