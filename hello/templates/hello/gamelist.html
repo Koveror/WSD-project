@@ -29,13 +29,7 @@
       }
     </style>
     <link href="starter-template.css" rel="stylesheet">
-    <script>
-      $(document).ready( function() {
-        $("#play").click(function () {
-          hello/gamedetail.html
-        });
-      });
-    </script>
+
   </head>
 
   <body>
@@ -96,8 +90,7 @@
     </nav>
     {# Navbar ends #}
 
-    <main role="main" class="container">
-      <br>
+    <main role="main">
       <br>
       <br>
       {% if request.user.is_authenticated %}
@@ -107,9 +100,13 @@
               <div class="row">
                 <div class="col-md-4">
                   <div class="card mb-4 shadow-sm">
-                    <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title><rect fill="#11595c" width="100%" height="100%"/><text fill="#eceeef" dy=".3em" x="50%" y="50%">{{purchase.gameid.name}}</text></svg>
+                    <h2> {{purchase.gameid.name}} </h2>
+                    {% load static %}
+                    <img src="{% static "hello/tetris_img.jpg" %}" alt="My image" height="250" width="348">
+
                     <div class="card-body">
-                      <p class="card-text">This is an awesome game. It belongs to {{purchase.gameid.genre}} genre.</p>
+                      <p class="card-text">Genre: {{purchase.gameid.genre}}</p>
+                      <p>Description: {{purchase.gameid.description}}</p>
                       <div class="d-flex justify-content-between align-items-center">
                         <div class="btn-group">
                           <input type="button" id="play" onclick="location.href='game/{{purchase.gameid.gameid}}';" value="Play"/>

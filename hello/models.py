@@ -21,6 +21,7 @@ class Game(models.Model):
     genre = models.CharField(max_length=200)
     dateCreated = models.DateTimeField()
     URL = models.CharField(max_length=200)
+    description = models.TextField(max_length=400, default="no description")
     def __str__(self):
         return self.name
 
