@@ -183,8 +183,9 @@ class LogoutView(generic.View):
 
 
 class SignupView(generic.View):
+    Allow: <http-methods>
     def signup(self, request):
-        template_name = 'hello/signup.html'
+        template_name = 'hello/register.html'
         if request.method == 'POST':
             form = UserCreationForm(request.POST)
             if form.is_valid():
@@ -196,4 +197,4 @@ class SignupView(generic.View):
                 return redirect('home')
         else:
             form = UserCreationForm()
-        return render(request, 'signup.html', {'form': form})
+        return render(request, 'register.html', {'form': form})
