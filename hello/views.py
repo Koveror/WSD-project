@@ -1,4 +1,6 @@
 import json
+import os
+import uuid
 from datetime import datetime
 from hashlib import md5
 from django.shortcuts import render, redirect
@@ -209,20 +211,30 @@ class BuyGameView(generic.View):
         template_name = "hello/buygame.html"
 
         #FIXME: Read these from somewhere
-        secret_key = "INSERT SECRET KEY"
-        sid = "INSERT SID"
-        pid = "INSERT PID"
-        amount = "INSERT AMOUNT"
-        checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, sid, amount, secret_key)
-        m = md5(checksumstr.encode("ascii"))
-        checksum = m.hexdigest()
+        try:
+            gameid = self.kwargs['pk']
+            game = Game.objects.get(gameid = gameid)
 
-        context = {
-            'sid' : sid,
-            'pid' : pid,
-            'amount' : amount,
-            'secret_key' : secret_key,
-            'checksum' : checksum
-        }
+            secret_key = os.environ['WSD_SECRET_KEY']
+            sid = os.environ['WSD_SID']
 
-        return render(self.request, template_name, context)
+            pid = uuid.uuid1().int
+            amount = game.price
+            
+            checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, sid, amount, secret_key)
+            m = md5(checksumstr.encode("ascii"))
+            checksum = m.hexdigest()
+
+            context = {
+                'sid' : sid,
+                'pid' : pid,
+                'amount' : amount,
+                'secret_key' : secret_key,
+                'checksum' : checksum
+            }
+
+            return render(self.request, template_name, context)
+
+        except KeyError as e:
+
+            return HttpResponse("Your enviroment is incorrectly set up: {}".format(e))
