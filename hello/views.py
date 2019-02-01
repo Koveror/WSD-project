@@ -25,15 +25,17 @@ class HomeView(generic.View):
         template_name = 'hello/home.html'
         return render(request, template_name, context)
 
-class GameListView(generic.ListView):
-    """Generic view for the list of games.
-    It creates a context called object_list to be used in templates."""
-    template_name = 'hello/gamelist.html'
-    model = Game
+class GameListView(LoginRequiredMixin, generic.View):
+    login_url = 'hello:login'
+
+    def get(self, request):
+        purchases = Purchases.objects.filter(userid=request.user)
+        template_name = 'hello/gamelist.html'
+        return render(request, template_name, {'purchases': purchases})
 
 class DeveloperView(LoginRequiredMixin, generic.View):
     login_url = 'hello:login'
-    #edirect_field_name = 'hello/login.html'
+    
     def get(self, request):
 
         #Test if user belongs to developer-group
@@ -113,7 +115,7 @@ class GameSaveView(generic.DetailView):
             save_message = {'message' : 'Something went wrong'}
             return JsonResponse(save_message)
 
-        
+
 
 
 class ScoreDetailView(generic.DetailView):
