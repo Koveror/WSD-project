@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from hashlib import md5
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views import generic
@@ -197,3 +198,27 @@ class SignupView(generic.View):
         else:
             form = UserCreationForm()
         return render(request, 'signup.html', {'form': form})
+
+class BuyGameView(generic.View):
+
+    def get(self, *args, **kwargs):
+
+        template_name = "hello/buygame.html"
+
+        secret_key = "Not a secret key"
+        sid = "Not sid"
+        pid = "Not pid"
+        amount = "Some amount"
+        checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, sid, amount, secret_key)
+        m = md5(checksumstr.encode("ascii"))
+        checksum = m.hexdigest()
+
+        context = {
+            'sid' : sid,
+            'pid' : pid,
+            'amount' : amount,
+            'secret_key' : secret_key,
+            'checksum' : checksum
+        }
+
+        return render(self.request, template_name, context)

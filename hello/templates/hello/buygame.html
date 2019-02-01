@@ -1,0 +1,21 @@
+<h1>Please wait</h1>
+
+<form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST" name="buy_form">
+    <input type="hidden" name="secret_key" value="{{secret_key}}" />
+    <input type="hidden" name="amount" value={{amount}} />
+    <input type="hidden" name="pid" value="{{pid}}" />
+    <input type="hidden" name="sid" value="{{sid}}" />
+    <input type="hidden" name="success_url"
+            value="http://localhost:8000/payment/success" />
+    <input type="hidden" name="cancel_url"
+            value="http://localhost:8000/payment/cancel" />
+    <input type="hidden" name="error_url"
+            value="http://localhost:8000/payment/error" />
+    <input type="hidden" name="checksum"
+            value="{{checksum}}"/>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+{% load static %}
+<script src="{% static 'hello/auto_submit.js' %}"></script>
