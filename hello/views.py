@@ -214,11 +214,14 @@ class BuyGameView(generic.View):
 
         template_name = "hello/buygame.html"
 
-        #FIXME: Read these from somewhere
         try:
             gameid = self.kwargs['pk']
             game = Game.objects.get(gameid = gameid)
 
+            #Secret values are read from enviromental variables.
+            #Set up your own variables by running on the command line:
+            #MY_VARIABLE=something
+            #export MY_VARIABLE
             secret_key = os.environ['WSD_SECRET_KEY']
             sid = os.environ['WSD_SID']
 
@@ -242,3 +245,41 @@ class BuyGameView(generic.View):
         except KeyError as e:
 
             return HttpResponse("Your enviroment is incorrectly set up: {}".format(e))
+
+class PaymentSuccessView(generic.View):
+
+    #FIXME: Make pretty
+    #FIXME: Error handling
+
+    def get(self, request):
+        #The payment service gives data in url parameters.
+        #They can be accessed like this
+        pid = request.GET.get('pid', '')
+        ref = request.GET.get('ref', '')
+        result = request.GET.get('result', '')
+        parameter_checksum = request.GET.get('checksum', '')
+        secret_key = os.environ['WSD_SECRET_KEY']
+
+        checksumstr = "pid={}&ref={}&result={}&token={}".format(pid, ref, result, secret_key)
+        m = md5(checksumstr.encode("ascii"))
+        checksum = m.hexdigest()
+
+        #The purchase is authenticated by matching a given cheksum with the one we calculated
+        if checksum == parameter_checksum:
+            return HttpResponse("Payment successful")
+        else:
+            return redirect('hello:payment_error')
+
+
+class PaymentCancelView(generic.View):
+
+    def get(self, request):
+        #FIXME: Make pretty
+        return HttpResponse("Payment canceled")
+
+
+class PaymentErrorView(generic.View):
+
+    def get(self, request):
+        #FIXME: Make pretty
+        return HttpResponse("There was an error in handling your payment")
