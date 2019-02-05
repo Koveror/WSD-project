@@ -5,11 +5,11 @@
     <input type="hidden" name="pid" value="{{pid}}" />
     <input type="hidden" name="sid" value="{{sid}}" />
     <input type="hidden" name="success_url"
-            value="http://localhost:8000/hello/payment_success" />
+            value="http://localhost:8000/hello/payment_success/{{gameid}}" />
     <input type="hidden" name="cancel_url"
-            value="http://localhost:8000/hello/payment_cancel" />
+            value="http://localhost:8000/hello/payment_cancel/{{gameid}}" />
     <input type="hidden" name="error_url"
-            value="http://localhost:8000/hello/payment_error" />
+            value="http://localhost:8000/hello/payment_error/{{gameid}}" />
     <input type="hidden" name="checksum"
             value="{{checksum}}"/>
 </form>

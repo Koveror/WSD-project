@@ -45,7 +45,7 @@ class GameState(models.Model):
         return '{}, {}, {}'.format(self.gameid, self.userid, self.gameState)
 
 class Purchases(models.Model):
-    pid = models.IntegerField(primary_key=True, unique=True, default=None)
+    pid = models.CharField(primary_key=True, unique=True, max_length=200)
     gameid = models.ForeignKey(Game, on_delete= models.CASCADE)
     userid = models.ForeignKey(User, on_delete= models.CASCADE)
     def __str__(self):

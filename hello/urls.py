@@ -21,7 +21,7 @@ urlpatterns = [
     path('score/<int:pk>/', views.ScoreDetailView.as_view(), name='scoredetail'),
     path('submit_score/<int:pk>/', views.SubmitScoreView.as_view(), name='submit_score'),
     path('buy_game/<int:pk>/', views.BuyGameView.as_view(), name='buy_game'),
-    path('payment_success/', views.PaymentSuccessView.as_view(), name='payment_success'),
-    path('payment_cancel/', views.PaymentCancelView.as_view(), name='payment_cancel'),
-    path('payment_error/', views.PaymentErrorView.as_view(), name='payment_error'),
+    path('payment_success/<int:pk>', views.PaymentSuccessView.as_view(), name='payment_success'),
+    path('payment_cancel/<int:pk>', views.PaymentCancelView.as_view(), name='payment_cancel'),
+    path('payment_error/<int:pk>', views.PaymentErrorView.as_view(), name='payment_error'),
 ]
