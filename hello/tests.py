@@ -8,10 +8,25 @@ import sys
 from django.core.serializers.json import DjangoJSONEncoder
 
 class GameModelTest(TestCase):
+    
     def setUp(self):
-        user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        Game.objects.create(gameid=1000, name="lion", developerid=user, price=2.0, numberSold=0, 
-        genre="roar", dateCreated=timezone.now())
+        user = User.objects.create_user(
+            'john',
+            'lennon@thebeatles.com',
+            'johnpassword'
+        )
+        game = Game.objects.create(
+            gameid=1000,
+            name="lion",
+            developerid=user,
+            price=2.0,
+            numberSold=0, 
+            primarygenre="roar",
+            secondarygenre="meow",
+            dateCreated=timezone.now(),
+            URL="URL",
+            description="Game about lions"
+        )
 
     """Test if a game object is created correctly"""
     def test_game_id(self):
@@ -26,12 +41,16 @@ class GameModelTest(TestCase):
         lion = Game.objects.get(name="lion")
         self.assertEqual(lion.numberSold, 0)
 
-    def test_game_genre(self):
+    def test_game_primarygenre(self):
         lion = Game.objects.get(name="lion")
-        self.assertEqual(lion.genre, "roar")
+        self.assertEqual(lion.primarygenre, "roar")
 
 
 class GameLimitValueTests(TestCase):
+
+    def setUp(self):
+        pass
+
     def test_game_number_sold_negative(self):
         newgame = Game(numberSold = -1)
         self.assertEqual(newgame.numberSold, 0)
@@ -48,25 +67,48 @@ class GameLimitValueTests(TestCase):
 
 ''' Test score '''
 class ScoreModelTest(TestCase):
+    
+    def setUp(self):
+        user = User.objects.create_user(
+            'john',
+            'lennon@thebeatles.com',
+            'johnpassword'
+        )
+        game = Game.objects.create(
+            gameid=1000,
+            name="lion",
+            developerid=user,
+            price=2.0,
+            numberSold=0, 
+            primarygenre="roar",
+            secondarygenre="meow",
+            dateCreated=timezone.now(),
+            URL="URL",
+            description="Game about lions"
+        )
+        score = Score.objects.create(
+            userid=user,
+            gameid=game,
+            score=0,
+            timestamp=timezone.now()
+        )
+
+    
     def test_game_id(self):
-        user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        lion = Game.objects.create(gameid=1000, name="lion", developerid=user, price=2.0, numberSold=0, 
-        genre="roar", dateCreated=timezone.now())
-        score = Score.objects.create(userid=user, gameid=lion, score=0, timestamp=timezone.now())
-        self.assertEqual(score.gameid, lion)
+        user = User.objects.get(username='john')
+        game = Game.objects.get(name='lion')
+        score = Score.objects.get(userid=user)
+        self.assertEqual(score.gameid, game)
 
     def test_user_id(self):
-        user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        lion = Game.objects.create(gameid=1000, name="lion", developerid=user, price=2.0, numberSold=0, 
-        genre="roar", dateCreated=timezone.now())
-        score = Score.objects.create(userid=user, gameid=lion, score=0, timestamp=timezone.now())
+        user = User.objects.get(username='john')
+        game = Game.objects.get(name='lion')
+        score = Score.objects.get(gameid=game)
         self.assertEqual(score.userid, user)
 
     def test_score(self):
-        user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        lion = Game.objects.create(gameid=1000, name="lion", developerid=user, price=2.0, numberSold=0, 
-        genre="roar", dateCreated=timezone.now())
-        score = Score.objects.create(userid=user, gameid=lion, score=0, timestamp=timezone.now())
+        user = User.objects.get(username='john')
+        score = Score.objects.get(userid = user)
         self.assertEqual(score.score, 0)
 
 class ScoreLimitValueTests(TestCase):
@@ -77,47 +119,88 @@ class ScoreLimitValueTests(TestCase):
 
 ''' Test gamestate '''
 class GameStateModelTest(TestCase):
+
+    def setUp(self):
+        user = User.objects.create_user(
+            'john',
+            'lennon@thebeatles.com',
+            'johnpassword'
+        )
+        game = Game.objects.create(
+            gameid=1000,
+            name="lion",
+            developerid=user,
+            price=2.0,
+            numberSold=0, 
+            primarygenre="roar",
+            secondarygenre="meow",
+            dateCreated=timezone.now(),
+            URL="URL",
+            description="Game about lions"
+        )
+        gameState = gameState = GameState.objects.create(
+            userid=user,
+            gameid=game,
+            gameState='{ x: 5, y: 6 }',
+            timestamp=timezone.now()
+        )
+
     def test_game_id(self):
-        user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        lion = Game.objects.create(gameid=1000, name="lion", developerid=user, price=2.0, numberSold=0, 
-        genre="roar", dateCreated=timezone.now())
-        gameState = GameState.objects.create(userid=user, gameid=lion, gameState='{ x: 5, y: 6 }', timestamp=timezone.now())
-        self.assertEqual(gameState.gameid, lion)
+        user = User.objects.get(username = 'john')
+        game = Game.objects.get(gameid=1000)
+        gameState = GameState.objects.get(userid = user)
+        self.assertEqual(gameState.gameid, game)
 
     def test_user_id(self):
-        user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        lion = Game.objects.create(gameid=1000, name="lion", developerid=user, price=2.0, numberSold=0, 
-        genre="roar", dateCreated=timezone.now())
-        gameState = GameState.objects.create(userid=user, gameid=lion, gameState='{ x: 5, y: 6 }', timestamp=timezone.now())
+        user = User.objects.get(username = 'john')
+        gameState = GameState.objects.get(userid = user)
         self.assertEqual(gameState.userid, user)
 
     def test_game_state(self):
-        user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        lion = Game.objects.create(gameid=1000, name="lion", developerid=user, price=2.0, numberSold=0, 
-        genre="roar", dateCreated=timezone.now())
-        gameState = GameState.objects.create(userid=user, gameid=lion, 
-        gameState='{ x: 5, y: 6 }', timestamp=timezone.now())
+        user = User.objects.get(username = 'john')
+        gameState = GameState.objects.get(userid = user)
         self.assertEqual(gameState.gameState, '{ x: 5, y: 6 }')
 
 
 class GameStateLimitValueTests(TestCase):
+
+    def setUp(self):
+        pass
+
     def test_game_number_sold_negative(self):
-        newgamestate = GameState(gameState = '{ x: 5, y: 6 }')
-        self.assertEqual((json.dumps(newgamestate.gameState)), ({"x":5,"y":6}))
+        newgamestate = GameState(gameState = '{ "x": 5, "y": 6 }')
+        self.assertEqual((json.loads(newgamestate.gameState)), ({"x":5,"y":6}))
 
 
 ''' Test purchases '''
-class GameStateModelTest(TestCase):
+class PurchaseModelTest(TestCase):
+
+    def setUp(self):
+        user = User.objects.create_user(
+            'john',
+            'lennon@thebeatles.com',
+            'johnpassword'
+        )
+        game = Game.objects.create(
+            gameid=1000,
+            name="lion",
+            developerid=user,
+            price=2.0,
+            numberSold=0, 
+            primarygenre="roar",
+            secondarygenre="meow",
+            dateCreated=timezone.now(),
+            URL="URL",
+            description="Game about lions"
+        )
+        purchase = Purchases.objects.create(userid=user, gameid=game)
+
     def test_game_id(self):
-        user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        lion = Game.objects.create(gameid=1000, name="lion", developerid=user, price=2.0, numberSold=0, 
-        genre="roar", dateCreated=timezone.now())
-        purchase = Purchases.objects.create(userid=user, gameid=lion)
-        self.assertEqual(purchase.gameid, lion)
+        game = Game.objects.get(gameid=1000)
+        purchase = Purchases.objects.get(gameid=game)
+        self.assertEqual(purchase.gameid, game)
 
     def test_user_id(self):
-        user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        lion = Game.objects.create(gameid=1000, name="lion", developerid=user, price=2.0, numberSold=0, 
-        genre="roar", dateCreated=timezone.now())
-        purchase = Purchases.objects.create(userid=user, gameid=lion)
+        user = User.objects.get(username = 'john')
+        purchase = Purchases.objects.get(userid=user)
         self.assertEqual(purchase.userid, user)
