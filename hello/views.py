@@ -225,7 +225,7 @@ class BuyGameView(generic.View):
             secret_key = os.environ['WSD_SECRET_KEY']
             sid = os.environ['WSD_SID']
 
-            pid = uuid.uuid1().int
+            pid = uuid.uuid1().hex
             amount = game.price
 
             checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, sid, amount, secret_key)
@@ -237,7 +237,8 @@ class BuyGameView(generic.View):
                 'pid' : pid,
                 'amount' : amount,
                 'secret_key' : secret_key,
-                'checksum' : checksum
+                'checksum' : checksum,
+                'gameid' : gameid
             }
 
             return render(self.request, template_name, context)
@@ -251,24 +252,40 @@ class PaymentSuccessView(generic.View):
     #FIXME: Make pretty
     #FIXME: Error handling
 
-    def get(self, request):
+    def get(self, *args, **kwargs):
+        
+        game = Game.objects.get(gameid = self.kwargs['pk'])
+        user = self.request.user
+        pid = self.request.GET.get('pid', '')
+        parameter_checksum = self.request.GET.get('checksum', '')
+        checksum = self.calculate_checksum(self.request)
+
+        #The purchase is authenticated by matching a given checksum with the one we calculated
+        if checksum == parameter_checksum:
+            self.save_purchase(game, user, pid)
+            return HttpResponse("Payment successful")
+        else:
+            return redirect('hello:payment_error')
+        
+    def calculate_checksum(self, request):
+        
         #The payment service gives data in url parameters.
         #They can be accessed like this
         pid = request.GET.get('pid', '')
         ref = request.GET.get('ref', '')
         result = request.GET.get('result', '')
-        parameter_checksum = request.GET.get('checksum', '')
         secret_key = os.environ['WSD_SECRET_KEY']
 
         checksumstr = "pid={}&ref={}&result={}&token={}".format(pid, ref, result, secret_key)
         m = md5(checksumstr.encode("ascii"))
         checksum = m.hexdigest()
 
-        #The purchase is authenticated by matching a given cheksum with the one we calculated
-        if checksum == parameter_checksum:
-            return HttpResponse("Payment successful")
-        else:
-            return redirect('hello:payment_error')
+        return checksum
+
+    def save_purchase(self, game, user, pid):
+        p = Purchases(pid = pid, gameid = game, userid = user)
+        p.save()
+
 
 
 class PaymentCancelView(generic.View):
