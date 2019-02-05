@@ -14,6 +14,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 
 class IndexView(generic.View):
 
@@ -192,20 +193,18 @@ class LogoutView(generic.View):
 
 class SignupView(generic.View):
 
-    def signup(self, request):
-        template_name = 'hello/register.html'
-        if request.method == 'POST':
-            form = UserCreationForm(request.POST)
-            if form.is_valid():
-                form.save()
-                username = form.cleaned_data.get('username')
-                raw_password = form.cleaned_data.get('password1')
-                user = authenticate(username=username, password=raw_password)
-                login(request, user)
-                return redirect('home')
+    def get(self, request):
+        return render(request, 'hello/register.html', {'form': UserCreationForm()})
+
+    def post(self, request):
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Account created successfully')
+            return redirect('hello/register.html')
         else:
-            form = UserCreationForm()
-        return render(request, 'signup.html', {'form': form})
+            return render(request, 'hello/register.html', {'form': form})
+
 
 class BuyGameView(generic.View):
 
@@ -225,7 +224,7 @@ class BuyGameView(generic.View):
 
             pid = uuid.uuid1().int
             amount = game.price
-            
+
             checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, sid, amount, secret_key)
             m = md5(checksumstr.encode("ascii"))
             checksum = m.hexdigest()
