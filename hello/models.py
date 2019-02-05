@@ -33,6 +33,14 @@ class Score(models.Model):
     gameid = models.ForeignKey(Game, on_delete= models.CASCADE)
     score = models.IntegerField(default = 0, validators=[validate_positive])
     timestamp = models.DateTimeField()
+    '''
+    def topscores:
+        games = self.objects.group_by('gameid').get()
+        topgames = []
+        for game in games:
+            topgames.append(game.order_by('-score')[:].get())
+        return topgames
+        '''
     def __str__(self):
         return '{}, {}, {}'.format(self.gameid, self.userid, self.score)
 
