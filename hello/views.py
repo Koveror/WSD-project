@@ -200,8 +200,11 @@ class SignupView(generic.View):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
+            if request.POST.get("developer", "") == 'Yes':
+                dev_group = Group.objects.get(name='Developer')
+                dev_group.user_set.add(User.objects.get(username=request.POST['username']))
             messages.success(request, 'Account created successfully')
-            return redirect('hello/register.html')
+            return render(request, 'hello/register.html', {'form': form})
         else:
             return render(request, 'hello/register.html', {'form': form})
 
