@@ -162,10 +162,14 @@ class ScoreDetailView(generic.DetailView):
 
 
 class LoginView(generic.View):
+
     def get(self, request):
-        context = {'msg': "Please enter a username and a password"}
-        template_name = 'hello/login.html'
-        return render(request, template_name, context)
+        if not request.user.is_authenticated:
+            context = {'msg': "Please enter a username and a password"}
+            return render(request, 'hello/login.html', context)
+        else:
+            messages.add_message(request, messages.INFO, 'You are already logged in')
+            return redirect('hello:home')
 
     def post(self, request):
         username = request.POST['username']
@@ -175,20 +179,24 @@ class LoginView(generic.View):
         if user is not None:
             login(request, user)
             # Redirect to a success page.
-            context = {'msg': "Login succesful"}
-            return render(request, 'hello/home.html', context)
+            messages.success(request, 'You are now logged in')
+            return redirect('hello:home')
         else:
             # Return an 'invalid login' error message.
-            context = {'msg': "Invalid login"}
-            return render(request, 'hello/login.html', context)
+            messages.add_message(request, messages.INFO, 'Invalid username or password')
+            return redirect('hello:login')
 
 class LogoutView(generic.View):
 
     def get(self, request):
-        logout(request)
-        # Redirect to a success page.
-        context = {'msg': "Logout succesful"}
-        return render(request, 'hello/logout.html', context)
+        if request.user.is_authenticated:
+            logout(request)
+            # Redirect to a success page.
+            messages.success(request, 'You succesfully logged out')
+            return redirect('hello:home')
+        else:
+            messages.add_message(request, messages.INFO, 'You are not logged in')
+            return redirect('hello:home')
 
 
 class SignupView(generic.View):
@@ -256,7 +264,7 @@ class PaymentSuccessView(generic.View):
     #FIXME: Error handling
 
     def get(self, *args, **kwargs):
-        
+
         game = Game.objects.get(gameid = self.kwargs['pk'])
         user = self.request.user
         pid = self.request.GET.get('pid', '')
@@ -269,9 +277,9 @@ class PaymentSuccessView(generic.View):
             return HttpResponse("Payment successful")
         else:
             return redirect('hello:payment_error')
-        
+
     def calculate_checksum(self, request):
-        
+
         #The payment service gives data in url parameters.
         #They can be accessed like this
         pid = request.GET.get('pid', '')

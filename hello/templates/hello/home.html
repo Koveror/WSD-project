@@ -39,6 +39,15 @@
         <div class="starter-template">
           <h1>Welcome to Gamestore!</h1>
           <p class="lead">Here you can buy, sell and play games.</p>
+
+          {% if messages %}
+            <ul>
+              {% for message in messages %}
+                {{ message }}
+              {% endfor %}
+            </ul>
+          {% endif %}
+
         </div>
       </section>
     </main><!-- /.container -->

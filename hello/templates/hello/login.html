@@ -38,13 +38,21 @@
       <section class="jumbotron text-center">
         <div class="starter-template">
           <h1>This is the login page</h1>
-          <p>Message:</p>{{msg}}
           <form method="post" action="login">
             {% csrf_token %}
             Username: <input type="text" name="username"><br>
             Password: <input type="text" name="password"><br>
             <input type="submit" value="Submit">
-          </form>
+            </form>
+
+            {% if messages %}
+              <ul>
+                {% for message in messages %}
+                  {{ message }}
+                {% endfor %}
+              </ul>
+            {% endif %}
+
         </div>
       </section>
     </main><!-- /.container -->
