@@ -232,7 +232,6 @@ class BuyGameView(generic.View):
     def get(self, *args, **kwargs):
         #Get a page with the form required for payment.
         #Form is automatically submitted and customer is redirected to payment service.
-
         template_name = "hello/buygame.html"
 
         try:
@@ -266,25 +265,27 @@ class BuyGameView(generic.View):
 
         except KeyError as e:
 
-            return HttpResponse("Your enviroment is incorrectly set up: {}".format(e))
+            return HttpResponse("The server is incorrectly set up: {}".format(e))
 
 class PaymentSuccessView(generic.View):
 
-    #FIXME: Make pretty
-    #FIXME: Error handling
-
     def get(self, *args, **kwargs):
 
-        game = Game.objects.get(gameid = self.kwargs['pk'])
-        user = self.request.user
-        pid = self.request.GET.get('pid', '')
-        parameter_checksum = self.request.GET.get('checksum', '')
-        checksum = self.calculate_checksum(self.request)
+        checksum = ""
+        try:
+            game = Game.objects.get(gameid = self.kwargs['pk'])
+            user = self.request.user
+            pid = self.request.GET.get('pid', '')
+            parameter_checksum = self.request.GET.get('checksum', '')
+            checksum = self.calculate_checksum(self.request)
+        except KeyError:
+            checksum = "ERROR"
 
         #The purchase is authenticated by matching a given checksum with the one we calculated
         if checksum == parameter_checksum:
             self.save_purchase(game, user, pid)
-            return HttpResponse("Payment successful")
+            messages.success(self.request, "Payment successfull. Go to your gamelist to play your games.")
+            return redirect('hello:home')
         else:
             return redirect('hello:payment_error')
 
@@ -311,13 +312,13 @@ class PaymentSuccessView(generic.View):
 
 class PaymentCancelView(generic.View):
 
-    def get(self, request):
-        #FIXME: Make pretty
-        return HttpResponse("Payment canceled")
+    def get(self, *args, **kwargs):
+        messages.add_message(self.request, messages.INFO, "Payment has been cancelled.")
+        return redirect("hello:home")
 
 
 class PaymentErrorView(generic.View):
 
-    def get(self, request):
-        #FIXME: Make pretty
-        return HttpResponse("There was an error in handling your payment")
+    def get(self, *args, **kwargs):
+        messages.add_message(self.request, messages.ERROR, "There was an error in handling your payment.")
+        return redirect("hello:home")
