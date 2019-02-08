@@ -41,7 +41,7 @@
 
       {% if not is_a_developer %}
         <p> You are not yet a developer. Would you like to become one? </p>
-        <button id="become_developer">Yes</button>
+        <a class="nav-link" href="{% url 'hello:become_developer' %}">Yes</a>
       {% else %}
         {{msg}}
         <p> Below you can add a game </p>

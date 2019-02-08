@@ -24,26 +24,27 @@ class IndexView(generic.View):
 class HomeView(generic.View):
 
     def get(self, request):
-        testlist = ['test1', 'test2', 'test3']
-        context = {'dict': testlist}
-        template_name = 'hello/home.html'
-        return render(request, template_name, context)
+        context = {'message': ''}
+        return render(request, 'hello/home.html', context)
 
 class GameListView(LoginRequiredMixin, generic.View):
     login_url = 'hello:login'
 
     def get(self, request):
         purchases = Purchases.objects.filter(userid=request.user)
-        template_name = 'hello/gamelist.html'
-        return render(request, template_name, {'purchases': purchases})
+        return render(request, 'hello/gamelist.html', {'purchases': purchases})
 
-class DeveloperView(LoginRequiredMixin, generic.View):
+class BecomeDeveloperView(LoginRequiredMixin, generic.View):
     login_url = 'hello:login'
 
     #Add the user to the developer-group
-    def make_developer(user):
-        my_group = Group.objects.get(name='Developer')
-        my_group.user_set.add(user)
+    def get(self, request):
+        Group.objects.get(name='Developer').user_set.add(request.user)
+        messages.success(request, 'You succesfully became a developer')
+        return redirect('hello:home')
+
+class DeveloperView(LoginRequiredMixin, generic.View):
+    login_url = 'hello:login'
 
     def get(self, request):
         #Test if user belongs to developer-group
@@ -88,10 +89,19 @@ class ShopView(generic.ListView):
     template_name = 'hello/shop.html'
     model = Game
 
-class GameDetailView(generic.DetailView):
+class GameDetailView(LoginRequiredMixin, generic.View):
     """Generic view for a single game."""
-    model = Game
-    template_name = 'hello/gamedetail.html'
+    login_url = 'hello:login'
+
+    def get(self, request, *args, **kwargs):
+        #Test if the user has bought the game
+        gameid = self.kwargs['pk']
+        if Purchases.objects.filter(userid=request.user, gameid=gameid).exists():
+            context = {'game': Game.objects.get(gameid = gameid)}
+            return render(request, 'hello/gamedetail.html', context)
+        else:
+            messages.add_message(request, messages.INFO, 'Access denied')
+            return redirect('hello:home')
 
 class GameSaveView(generic.DetailView):
     """View for saving gamestates. The save message is posted to this view using ajax."""
@@ -212,7 +222,7 @@ class SignupView(generic.View):
                 dev_group = Group.objects.get(name='Developer')
                 dev_group.user_set.add(User.objects.get(username=request.POST['username']))
             messages.success(request, 'Account created successfully')
-            return render(request, 'hello/register.html', {'form': form})
+            return redirect('hello:home')
         else:
             return render(request, 'hello/register.html', {'form': form})
 
