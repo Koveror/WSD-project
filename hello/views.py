@@ -84,6 +84,7 @@ class DeveloperView(LoginRequiredMixin, generic.View):
 class HighScoreView(generic.ListView):
     template_name = 'hello/highscores.html'
     model = Score
+    ordering = ['gameid', '-score']
 
 class ShopView(generic.ListView):
     template_name = 'hello/shop.html'
