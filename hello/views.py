@@ -77,7 +77,7 @@ class DeveloperView(LoginRequiredMixin, generic.View):
         is_member = request.user.groups.filter(name='Developer').exists()
         #Generate a list of developer's games
         games = Game.objects.filter(developerid=request.user)
-        context = {'is_a_developer': is_member, 'games': games, 'msg': 'You succesfully added a game'}
+        context = {'is_a_developer': is_member, 'games': games}
         return render(request, 'hello/developer.html', context)
 
 
