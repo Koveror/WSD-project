@@ -86,10 +86,13 @@
         <br>
         <br>
 
-      {% for score in object_list reversed  %}
+      {% regroup object_list by gameid as gamescorelist %}
+      {% for gamescore in gamescorelist %}
+      {% for score in gamescore.list %}
       <div class="col-md-4 themed-grid-col">{{score.gameid}}</div>
       <div class="col-md-4 themed-grid-col">{{score.userid}}</div>
       <div class="col-md-4 themed-grid-col">{{score.score}}</div>
+      {% endfor %}
       {% endfor %}
     </div>
 
