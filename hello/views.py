@@ -259,15 +259,17 @@ class BuyGameView(generic.View):
 
 class PaymentSuccessView(generic.View):
 
-    #FIXME: Error handling
-
     def get(self, *args, **kwargs):
 
-        game = Game.objects.get(gameid = self.kwargs['pk'])
-        user = self.request.user
-        pid = self.request.GET.get('pid', '')
-        parameter_checksum = self.request.GET.get('checksum', '')
-        checksum = self.calculate_checksum(self.request)
+        checksum = ""
+        try:
+            game = Game.objects.get(gameid = self.kwargs['pk'])
+            user = self.request.user
+            pid = self.request.GET.get('pid', '')
+            parameter_checksum = self.request.GET.get('checksum', '')
+            checksum = self.calculate_checksum(self.request)
+        except KeyError:
+            checksum = "ERROR"
 
         #The purchase is authenticated by matching a given checksum with the one we calculated
         if checksum == parameter_checksum:
