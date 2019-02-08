@@ -15,7 +15,7 @@ def validate_positive(value):
 class Game(models.Model):
 
     gameid = models.IntegerField(primary_key=True, unique=True, default=uuid.uuid4)
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
     developerid = models.ForeignKey(User, on_delete= models.CASCADE)
     price = models.DecimalField(decimal_places=2, max_digits=5,validators=[validate_positive])
     numberSold = models.IntegerField(default=0,validators=[validate_positive])
@@ -33,14 +33,6 @@ class Score(models.Model):
     gameid = models.ForeignKey(Game, on_delete= models.CASCADE)
     score = models.IntegerField(default = 0, validators=[validate_positive])
     timestamp = models.DateTimeField()
-    '''
-    def topscores:
-        games = self.objects.group_by('gameid').get()
-        topgames = []
-        for game in games:
-            topgames.append(game.order_by('-score')[:].get())
-        return topgames
-        '''
     def __str__(self):
         return '{}, {}, {}'.format(self.gameid, self.userid, self.score)
 

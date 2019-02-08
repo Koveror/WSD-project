@@ -56,14 +56,20 @@ class DeveloperView(LoginRequiredMixin, generic.View):
         return render(request, 'hello/developer.html', context)
 
     def post(self, request):
+        #Test if user belongs to developer-group
+        is_member = request.user.groups.filter(name='Developer').exists()
+        #Generate a list of developer's games
+        games = Game.objects.filter(developerid=request.user)
+
         #Create a new game
-        name = request.POST['name']
-        price = request.POST['price']
-        URL = request.POST['URL']
-        description = request.POST['description']
-        primarygenre = request.POST['primarygenre']
-        secondarygenre = request.POST['secondarygenre']
-        newgame = Game.objects.create(name=name,
+        try:
+            name = request.POST['name']
+            price = request.POST['price']
+            URL = request.POST['URL']
+            description = request.POST['description']
+            primarygenre = request.POST['primarygenre']
+            secondarygenre = request.POST['secondarygenre']
+            newgame = Game.objects.create(name=name,
                        price=price,
                        URL=URL,
                        developerid=request.user,
@@ -73,12 +79,13 @@ class DeveloperView(LoginRequiredMixin, generic.View):
                        primarygenre=primarygenre,
                        secondarygenre=secondarygenre
                        )
-        #Test if user belongs to developer-group
-        is_member = request.user.groups.filter(name='Developer').exists()
-        #Generate a list of developer's games
-        games = Game.objects.filter(developerid=request.user)
-        context = {'is_a_developer': is_member, 'games': games, 'msg': 'You succesfully added a game'}
-        return render(request, 'hello/developer.html', context)
+            context = {'is_a_developer': is_member, 'games': games}
+            messages.success(request, 'You succesfully added a game')
+            return render(request, 'hello/developer.html', context)
+        except:
+            context = {'is_a_developer': is_member, 'games': games}
+            messages.add_message(request, messages.INFO, 'Name already taken (or another error)')
+            return render(request, 'hello/developer.html', context)
 
 
 class HighScoreView(generic.ListView):
@@ -268,8 +275,8 @@ class BuyGameView(generic.View):
 
             return HttpResponse("The server is incorrectly set up: {}".format(e))
 
-class PaymentSuccessView(generic.View):
-
+class PaymentSuccessView(LoginRequiredMixin, generic.View):
+    login_url = 'hello:home'
     def get(self, *args, **kwargs):
 
         checksum = ""

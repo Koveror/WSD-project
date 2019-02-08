@@ -43,7 +43,6 @@
         <p> You are not yet a developer. Would you like to become one? </p>
         <a class="nav-link" href="{% url 'hello:become_developer' %}">Yes</a>
       {% else %}
-        {{msg}}
         <p> Below you can add a game </p>
 
         <form method="post" action="developer">
@@ -83,7 +82,13 @@
                         <input type="submit" value="Submit">
         </form>
         <br>
-        <p> Sale statistics of your games </p>
+        {% if messages %}
+            {% for message in messages %}
+              {{ message }}
+            {% endfor %}
+            <br><br>
+        {% endif %}
+        <p><b> Sale statistics of your games</b> </p>
 
         <div class="row mb-3">
           {% for game in games %}
