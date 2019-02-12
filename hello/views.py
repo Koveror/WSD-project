@@ -16,12 +16,14 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 
+#Homepage view that displays messages and has links to other views
 class HomeView(generic.View):
 
     def get(self, request):
         context = {'message': ''}
         return render(request, 'hello/home.html', context)
 
+#List of users own games
 class GameListView(LoginRequiredMixin, generic.View):
     login_url = 'hello:login'
 
@@ -29,18 +31,20 @@ class GameListView(LoginRequiredMixin, generic.View):
         purchases = Purchases.objects.filter(userid=request.user)
         return render(request, 'hello/gamelist.html', {'purchases': purchases})
 
+#View used to add users to developer group
 class BecomeDeveloperView(LoginRequiredMixin, generic.View):
     login_url = 'hello:login'
 
-    #Add the user to the developer-group
+    #Add the user to the developer-group which can be assumed exists
+    #FIXME: Should this be post instead?
     def get(self, request):
         Group.objects.get(name='Developer').user_set.add(request.user)
         messages.success(request, 'You succesfully became a developer')
         return redirect('hello:home')
 
+#Developer view for managing games
 class DeveloperView(LoginRequiredMixin, generic.View):
     login_url = 'hello:login'
-
 
     def get(self, request):
         #Test if user belongs to developer-group
@@ -83,12 +87,13 @@ class DeveloperView(LoginRequiredMixin, generic.View):
             return render(request, 'hello/developer.html', context)
         except KeyError:
             context = {'is_a_developer': is_member, 'games': games}
-            messages.add_message(request, messages.INFO, 'Name already taken (or another error)')
+            messages.add_message(request, messages.ERROR, 'Something went wrong')
             return render(request, 'hello/developer.html', context)
 
-class ModifyGameView(generic.DetailView):
+class ModifyGameView(LoginRequiredMixin, generic.DetailView):
     model = Game
     template_name = 'hello/modifygame.html'
+    login_url = 'hello:login'
 
     def post(self, request, *args, **kwargs):
         #Test if user belongs to developer-group
@@ -100,27 +105,33 @@ class ModifyGameView(generic.DetailView):
         #Check if the developer is the owner of the game
         if Game.objects.filter(developerid=request.user, gameid=gameid).exists():
             #Overwrite old values
-            name = request.POST['name']
-            price = request.POST['price']
-            URL = request.POST['URL']
-            description = request.POST['description']
-            primarygenre = request.POST['primarygenre']
-            secondarygenre = request.POST['secondarygenre']
-            newgame = Game.objects.filter(pk=gameid).update(name=name,
-                   price=price,
-                   URL=URL,
-                   developerid=request.user,
-                   numberSold=0,
-                   dateCreated=datetime.now(),
-                   description=description,
-                   primarygenre=primarygenre,
-                   secondarygenre=secondarygenre
-                   )
+            try:
+                name = request.POST['name']
+                price = request.POST['price']
+                URL = request.POST['URL']
+                description = request.POST['description']
+                primarygenre = request.POST['primarygenre']
+                secondarygenre = request.POST['secondarygenre']
+                newgame = Game.objects.filter(pk=gameid).update(name=name,
+                    price=price,
+                    URL=URL,
+                    developerid=request.user,
+                    numberSold=0,
+                    dateCreated=datetime.now(),
+                    description=description,
+                    primarygenre=primarygenre,
+                    secondarygenre=secondarygenre
+                    )
+            except KeyError:
+                messages.add_message(request, messages.ERROR, 'Something went wrong')
+                return redirect('hello:developer')
+            
             context = {'is_a_developer': is_member, 'games': games}
             messages.success(request, 'You succesfully modified a game')
             return redirect('hello:developer')
         
-class GameSalesView(generic.DetailView): 
+class GameSalesView(LoginRequiredMixin, generic.DetailView): 
+    login_url = 'hello:login'
     template_name = 'hello/gamesales.html'
     model = Purchases
     ordering = ['-timestamp']
@@ -134,18 +145,19 @@ class GameSalesView(generic.DetailView):
             messages.add_message(request, messages.INFO, 'No sales for this one yet')
             return redirect('hello:developer')
 
-
 class HighScoreView(generic.ListView):
     template_name = 'hello/highscores.html'
     model = Score
     ordering = ['gameid', '-score']
 
+#FIXME: Buying games while not logged in?
 class ShopView(generic.ListView):
     template_name = 'hello/shop.html'
     model = Game
 
+#Generic view for a single game
 class GameDetailView(LoginRequiredMixin, generic.View):
-    """Generic view for a single game."""
+
     login_url = 'hello:login'
 
     def get(self, request, *args, **kwargs):
@@ -158,13 +170,13 @@ class GameDetailView(LoginRequiredMixin, generic.View):
             messages.add_message(request, messages.INFO, 'Access denied')
             return redirect('hello:home')
 
-class GameSaveView(generic.DetailView):
-    """View for saving gamestates. The save message is posted to this view using ajax."""
+#View for saving gamestates. The save message is posted to this view using ajax
+class GameSaveView(LoginRequiredMixin, generic.DetailView):
+
     model = Game
     template_name = 'hello/gamedetail.html'
+    login_url = 'hello:login'
 
-    #FIXME: Check for login
-    #@login_required
     def post(self, *args, **kwargs):
         """Method for saving data"""
         try:
@@ -185,18 +197,17 @@ class GameSaveView(generic.DetailView):
 
             save_message = {'message' : 'Successfully saved'}
             return JsonResponse(save_message)
-        except:     #FIXME: Generic exception handler
+        except KeyError:    #FIXME: Add more error handling
             save_message = {'message' : 'Something went wrong'}
             return JsonResponse(save_message)
 
-class SubmitScoreView(generic.DetailView):
+#View for submitting scores. The score is posted using ajax.
+class SubmitScoreView(LoginRequiredMixin, generic.DetailView):
     model = Score
     template_name = 'hello/scoredetail.html'
+    login_url = 'hello:login'
 
     def post(self, *args, **kwargs):
-
-        #FIXME: Check for login here
-        #@login_required
         try:
             message = json.loads(self.request.body)
             user_score = message.get('score')
@@ -214,18 +225,19 @@ class SubmitScoreView(generic.DetailView):
 
             save_message = {'message' : 'Successfully saved'}
             return JsonResponse(save_message)
-        except:     #FIXME: Generic exception handler
+        except KeyError:
             save_message = {'message' : 'Something went wrong'}
             return JsonResponse(save_message)
 
         save_message = {'message' : 'Submit score called successfully'}
         return JsonResponse(save_message)
 
+#View details for a single score
 class ScoreDetailView(generic.DetailView):
     model = Score
     template_name = 'hello/scoredetail.html'
 
-
+#View for logging in
 class LoginView(generic.View):
 
     def get(self, request):
@@ -251,6 +263,7 @@ class LoginView(generic.View):
             messages.add_message(request, messages.INFO, 'Invalid username or password')
             return redirect('hello:login')
 
+#View for logging out
 class LogoutView(generic.View):
 
     def get(self, request):
@@ -276,17 +289,18 @@ class SignupView(generic.View):
             if request.POST.get("developer", "") == 'Yes':
                 dev_group = Group.objects.get(name='Developer')
                 dev_group.user_set.add(User.objects.get(username=request.POST['username']))
-            messages.success(request, 'Account created successfully')
-            return redirect('hello:home')
+            messages.success(request, 'Account created successfully, please login.')
+            return redirect('hello:login')
         else:
             return render(request, 'hello/register.html', {'form': form})
 
+#A form for buying a specific game. Displayed before moving to payment service.
+class BuyGameView(LoginRequiredMixin, generic.View):
 
-class BuyGameView(generic.View):
+    login_url = 'hello:login'
 
     def get(self, *args, **kwargs):
         #Get a page with the form required for payment.
-        #Form is automatically submitted and customer is redirected to payment service.
         template_name = "hello/buygame.html"
 
         try:
@@ -319,11 +333,11 @@ class BuyGameView(generic.View):
             return render(self.request, template_name, context)
 
         except KeyError as e:
-
             return HttpResponse("The server is incorrectly set up: {}".format(e))
 
+#User is redirected to this view after succesfully interacting with the payment service.
 class PaymentSuccessView(LoginRequiredMixin, generic.View):
-    login_url = 'hello:home'
+    login_url = 'hello:login'
     def get(self, *args, **kwargs):
 
         checksum = ""
@@ -342,8 +356,10 @@ class PaymentSuccessView(LoginRequiredMixin, generic.View):
             messages.success(self.request, "Payment successfull. Go to your gamelist to play your games.")
             return redirect('hello:home')
         else:
+            #If checksum doesn't match on our end, continue to payment error
             return redirect('hello:payment_error')
 
+    #Helper function for calculating a checksum
     def calculate_checksum(self, request):
 
         #The payment service gives data in url parameters.
@@ -359,12 +375,13 @@ class PaymentSuccessView(LoginRequiredMixin, generic.View):
 
         return checksum
 
+    #Helper function for saving a purchase to the database
     def save_purchase(self, game, user, pid):
         p = Purchases(pid = pid, gameid = game, userid = user, timestamp = datetime.now())
         p.save()
 
 
-
+#User is redirected to this view is payment is cancelled in the payment service.
 class PaymentCancelView(generic.View):
 
     def get(self, *args, **kwargs):
@@ -372,6 +389,7 @@ class PaymentCancelView(generic.View):
         return redirect("hello:home")
 
 
+#User is redirected here if there is an error with the payment service.
 class PaymentErrorView(generic.View):
 
     def get(self, *args, **kwargs):
