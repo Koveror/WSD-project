@@ -37,9 +37,6 @@ function receiveMessage(event)
     message = JSON.stringify(event.data);
     console.log("Received object: " + message);
 
-    //FIXME: Can be moved up?
-    setupAjax();
-
     if(event.data.messageType == "SAVE") {
         saveGame();
     }
@@ -51,16 +48,6 @@ function receiveMessage(event)
     }
 }
 
-function setupAjax() {
-    $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-    });
-}
-
 //Save game state to database
 function saveGame() {
     //Find the save form in the HTML to get a nicely formatted URL
@@ -68,6 +55,11 @@ function saveGame() {
     var url = form.attr('url');
 
     $.ajax({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    },
     type: "POST",
     url: url,
     data: JSON.stringify(event.data),
@@ -88,6 +80,11 @@ function submitScore() {
     var url = form.attr('url');
 
     $.ajax({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    },
     type: "POST",
     url: url,
     data: JSON.stringify(event.data),
