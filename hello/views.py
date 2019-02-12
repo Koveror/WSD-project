@@ -15,7 +15,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-import datetime
 
 class IndexView(generic.View):
 
@@ -366,7 +365,7 @@ class PaymentSuccessView(LoginRequiredMixin, generic.View):
         return checksum
 
     def save_purchase(self, game, user, pid):
-        p = Purchases(pid = pid, gameid = game, userid = user, timestamp = datetime.datetime.now())
+        p = Purchases(pid = pid, gameid = game, userid = user, timestamp = datetime.now())
         p.save()
 
 

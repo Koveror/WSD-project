@@ -50,7 +50,7 @@ class Purchases(models.Model):
     pid = models.CharField(primary_key=True, unique=True, max_length=200)
     gameid = models.ForeignKey(Game, on_delete= models.CASCADE)
     userid = models.ForeignKey(User, on_delete= models.CASCADE)
-    timestamp = models.DateTimeField(default=datetime.datetime.now()) #auto_now_add=True
+    timestamp = models.DateTimeField()
     def __str__(self):
         return '{}, {}'.format(self.gameid, self.userid)
 
