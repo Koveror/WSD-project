@@ -87,17 +87,23 @@ class DeveloperView(LoginRequiredMixin, generic.View):
             messages.add_message(request, messages.INFO, 'Name already taken (or another error)')
             return render(request, 'hello/developer.html', context)
 
-class ModifyGameView(generic.DetailView):
-    model = Game
-    template_name = 'hello/modifygame.html'
+class ModifyGameView(LoginRequiredMixin, generic.View):
+    login_url = 'hello:login'
+
+    def get(self, request, *args, **kwargs):
+        template_name = 'hello/modifygame.html'
+        gameid = self.kwargs['pk']
+        if Game.objects.filter(developerid=request.user, gameid=gameid).exists():
+            return render(request, template_name, {'game':Game.objects.filter(gameid=gameid)})
+        else:
+            messages.add_message(request, messages.INFO, '''You don't have access to this game''')
+            return redirect('hello:home')
 
     def post(self, request, *args, **kwargs):
         #Test if user belongs to developer-group
         is_member = request.user.groups.filter(name='Developer').exists()
-        #Generate a list of developer's games
-        games = Game.objects.filter(developerid=request.user)
-        #To-be-modified game's id
         gameid = self.kwargs['pk']
+
         #Check if the developer is the owner of the game
         if Game.objects.filter(developerid=request.user, gameid=gameid).exists():
             #Overwrite old values
@@ -117,10 +123,8 @@ class ModifyGameView(generic.DetailView):
                    primarygenre=primarygenre,
                    secondarygenre=secondarygenre
                    )
-            context = {'is_a_developer': is_member, 'games': games}
             messages.success(request, 'You succesfully modified a game')
             return redirect('hello:developer')
-        
 
 class HighScoreView(generic.ListView):
     template_name = 'hello/highscores.html'
