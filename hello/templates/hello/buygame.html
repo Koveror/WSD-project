@@ -1,20 +1,74 @@
-<h1>Redirecting to payment service</h1>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <title>BuyGame</title>
 
-<form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST" name="buy_form">
-    <input type="hidden" name="amount" value={{amount}} />
-    <input type="hidden" name="pid" value="{{pid}}" />
-    <input type="hidden" name="sid" value="{{sid}}" />
-    <input type="hidden" name="success_url"
-            value="http://localhost:8000/hello/payment_success/{{gameid}}" />
-    <input type="hidden" name="cancel_url"
-            value="http://localhost:8000/hello/payment_cancel/{{gameid}}" />
-    <input type="hidden" name="error_url"
-            value="http://localhost:8000/hello/payment_error/{{gameid}}" />
-    <input type="hidden" name="checksum"
-            value="{{checksum}}"/>
-</form>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+      }
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    {% load static %}
+    <link href="{% static 'hello/grid.css' %}" rel="stylesheet">
+  </head>
 
-{% load static %}
-<script src="{% static 'hello/auto_submit.js' %}"></script>
+  <body>
+    {# Navbar #}
+    <div class="basic">
+      {% include "hello/navbar.html" %}
+    </div>
+    <br>
+
+    <div class="panel panel-primary">
+        <dic class="panel-heading">
+                <h3 class="panel-title">Product information</h3>
+        </div>
+        <div class="panel-body">
+                <p>Name: {{game.name}}</p>
+                <p>Developer: {{game.developerid}}</p>
+                <p>Price: {{game.price}}</p>
+                <p>Description: {{game.description}}</p>
+                <p>Primary genre: {{game.primarygenre}}</p>
+                <p>Secondary genre: {{game.secondarygenre}}</p>
+        </div>
+    </div>
+
+
+    <div>
+        <form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST" name="buy_form">
+                <input type="hidden" name="amount" value={{amount}} />
+                <input type="hidden" name="pid" value="{{pid}}" />
+                <input type="hidden" name="sid" value="{{sid}}" />
+                <input type="hidden" name="success_url"
+                        value="http://localhost:8000/hello/payment_success/{{gameid}}" />
+                <input type="hidden" name="cancel_url"
+                        value="http://localhost:8000/hello/payment_cancel/{{gameid}}" />
+                <input type="hidden" name="error_url"
+                        value="http://localhost:8000/hello/payment_error/{{gameid}}" />
+                <input type="hidden" name="checksum" value="{{checksum}}"/>
+                <input type="submit" class="btn-primary" value="Continue to payment">
+        </form>
+        
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    </div>
+
+
+  </body>
+</html>

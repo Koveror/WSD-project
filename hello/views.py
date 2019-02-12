@@ -295,8 +295,10 @@ class SignupView(generic.View):
             return render(request, 'hello/register.html', {'form': form})
 
 #A form for buying a specific game. Displayed before moving to payment service.
-class BuyGameView(LoginRequiredMixin, generic.View):
-
+#FIXME: What if game is bought twice
+class BuyGameView(LoginRequiredMixin, generic.DetailView):
+    
+    template_name = 'hello/buygame.html'
     login_url = 'hello:login'
 
     def get(self, *args, **kwargs):
@@ -327,7 +329,8 @@ class BuyGameView(LoginRequiredMixin, generic.View):
                 'amount' : amount,
                 'secret_key' : secret_key,
                 'checksum' : checksum,
-                'gameid' : gameid
+                'gameid' : gameid,
+                'game' : game,
             }
 
             return render(self.request, template_name, context)
