@@ -40,34 +40,35 @@
     <main role="main">
       <br>
       <br>
-      {% for game in object_list %}
-        <div class="album py-5 bg-light">
-          <div class="container">
-            <div class="row">
-              <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                  <h2> {{game.name}} </h2>
-                  {% load static %}
-                  <img src="{% static "hello/tetris_img.jpg" %}" alt="My image" height="250" width="348">
 
-                  <div class="card-body">
-                    <p class="card-text">Primary genre: {{game.primarygenre}}</p>
-                    {% if game.secondarygenre %}
-                      <p class="card-text">Secondary genre: {{game.secondarygenre}}</p>
-                    {% endif %}
-                    <p>Description: {{game.description}}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="btn-group">
-                        <a href="{% url 'hello:buy_game' game.gameid %}" class="btn btn-sm btn-outline-secondary">Buy game: {{game.price}}€</a>
-                      </div>
+      <div class="album py-5 bg-light">
+        <div class="container">
+          <h3> My games </h3><br>
+          <div class="row">
+            {% for game in object_list %}
+            <div class="col-md-4">
+              <div class="card mb-4 shadow-sm">
+                {% load static %}
+                <img src="{% static "hello/tetris_img.jpg" %}" alt="My image" width="100%" height="225">
+                <div class="card-body">
+                  <p class="card-text">Primary genre: {{game.primarygenre}}</p>
+                  {% if game.secondarygenre %}
+                    <p class="card-text">Secondary genre: {{game.secondarygenre}}</p>
+                  {% endif %}
+                  <p>Description: {{game.description}}</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <a href="{% url 'hello:buy_game' game.gameid %}" class="btn btn-sm btn-outline-secondary">Buy game: {{game.price}}€</a>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          {% endfor %}
           </div>
         </div>
-      {% endfor %}
+      </div>
+      
     </main>
 
   </body>
