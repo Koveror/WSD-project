@@ -16,11 +16,6 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 
-class IndexView(generic.View):
-
-    def get(self, request):
-        return HttpResponse("Hello, world. You're at the hello index.")
-
 class HomeView(generic.View):
 
     def get(self, request):
