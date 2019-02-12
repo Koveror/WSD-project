@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+import datetime
 
 class IndexView(generic.View):
 
@@ -46,11 +47,15 @@ class BecomeDeveloperView(LoginRequiredMixin, generic.View):
 class DeveloperView(LoginRequiredMixin, generic.View):
     login_url = 'hello:login'
 
+
     def get(self, request):
         #Test if user belongs to developer-group
         is_member = request.user.groups.filter(name='Developer').exists()
         #Generate a list of developer's games
         games = Game.objects.filter(developerid=request.user)
+
+        purchases = Purchases.objects.filter(gameid__in=games)
+        ordering = ['gameid', '-timestamp']
 
         context = {'is_a_developer': is_member, 'games': games}
         return render(request, 'hello/developer.html', context)
@@ -121,6 +126,20 @@ class ModifyGameView(generic.DetailView):
             messages.success(request, 'You succesfully modified a game')
             return redirect('hello:developer')
         
+class GameSalesView(generic.DetailView): 
+    template_name = 'hello/gamesales.html'
+    model = Purchases
+    ordering = ['-timestamp']
+    def get(self, request, *args, **kwargs):
+        #Test if the user has bought the game
+        gameid = self.kwargs['pk']
+        if Purchases.objects.filter(gameid=gameid).exists():
+            context = {'purchase': Purchases.objects.filter(gameid = gameid)}
+            return render(request, 'hello/gamesales.html', context)
+        else:
+            messages.add_message(request, messages.INFO, 'No sales for this one yet')
+            return redirect('hello:developer')
+
 
 class HighScoreView(generic.ListView):
     template_name = 'hello/highscores.html'
@@ -347,7 +366,7 @@ class PaymentSuccessView(LoginRequiredMixin, generic.View):
         return checksum
 
     def save_purchase(self, game, user, pid):
-        p = Purchases(pid = pid, gameid = game, userid = user)
+        p = Purchases(pid = pid, gameid = game, userid = user, timestamp = datetime.datetime.now())
         p.save()
 
 
