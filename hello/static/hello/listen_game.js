@@ -1,4 +1,5 @@
 //This script is used for listening embedded games and acting accordingly.
+"use strict";
 
 //Helper function for getting cookies
 function getCookie(name) {
@@ -34,22 +35,22 @@ function receiveMessage(event)
     if(event.origin !== "") {
         //FIXME: Only execute messages from trustworthy sources
     }
-    message = JSON.stringify(event.data);
+    var message = JSON.stringify(event.data);
     console.log("Received object: " + message);
 
     if(event.data.messageType == "SAVE") {
-        saveGame();
+        saveGame(event);
     }
     if(event.data.messageType == "LOAD_REQUEST") {
-        loadGame();
+        loadGame(event);
     }
     if(event.data.messageType == "SCORE") {
-        submitScore();
+        submitScore(event);
     }
 }
 
 //Save game state to database
-function saveGame() {
+function saveGame(event) {
     //Find the save form in the HTML to get a nicely formatted URL
     var form = $("#save_form");
     var url = form.attr('url');
@@ -70,12 +71,12 @@ function saveGame() {
 }
 
 //Load gameState from database and send it to the game
-function loadGame() {
+function loadGame(event) {
 
 }
 
 //Save score to the database
-function submitScore() {
+function submitScore(event) {
     var form = $("#score_form");
     var url = form.attr('url');
 
