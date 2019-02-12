@@ -82,7 +82,7 @@ class DeveloperView(LoginRequiredMixin, generic.View):
             context = {'is_a_developer': is_member, 'games': games}
             messages.success(request, 'You succesfully added a game')
             return render(request, 'hello/developer.html', context)
-        except:
+        except KeyError:
             context = {'is_a_developer': is_member, 'games': games}
             messages.add_message(request, messages.INFO, 'Name already taken (or another error)')
             return render(request, 'hello/developer.html', context)
