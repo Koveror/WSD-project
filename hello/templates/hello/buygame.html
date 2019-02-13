@@ -50,18 +50,18 @@
         </div>
     </div>
 
-
+    {%FIXME: Absolute path needs to be generated for success and others%}
     <div>
         <form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST" name="buy_form">
                 <input type="hidden" name="amount" value={{amount}} />
                 <input type="hidden" name="pid" value="{{pid}}" />
                 <input type="hidden" name="sid" value="{{sid}}" />
                 <input type="hidden" name="success_url"
-                        value="http://localhost:8000/hello/payment_success/{{gameid}}" />
+                        value="{% url 'hello:payment_success' game.gameid %}"/>
                 <input type="hidden" name="cancel_url"
-                        value="http://localhost:8000/hello/payment_cancel/{{gameid}}" />
+                        value="{% url 'hello:payment_cancel' game.gameid %}" />
                 <input type="hidden" name="error_url"
-                        value="http://localhost:8000/hello/payment_error/{{gameid}}" />
+                        value="{% url 'hello:payment_error' game.gameid %}"/>
                 <input type="hidden" name="checksum" value="{{checksum}}"/>
                 <input type="submit" class="btn-primary" value="Continue to payment">
         </form>
