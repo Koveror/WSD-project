@@ -323,6 +323,10 @@ class BuyGameView(LoginRequiredMixin, generic.DetailView):
             m = md5(checksumstr.encode("ascii"))
             checksum = m.hexdigest()
 
+            success_url = self.request.build_absolute_uri('/hello/payment_success')
+            cancel_url = self.request.build_absolute_uri('/hello/payment_cancel')
+            error_url = self.request.build_absolute_uri('/hello/payment_error')
+
             context = {
                 'sid' : sid,
                 'pid' : pid,
@@ -331,6 +335,9 @@ class BuyGameView(LoginRequiredMixin, generic.DetailView):
                 'checksum' : checksum,
                 'gameid' : gameid,
                 'game' : game,
+                'success_url' : success_url,
+                'cancel_url' : cancel_url,
+                'error_url' : error_url,
             }
 
             return render(self.request, template_name, context)
