@@ -24,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '#v#@_0exslg+!ulv)he($7plo@de+sw$#+1&&-+6qi3lcm8)+n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -132,7 +132,7 @@ if "DYNO" in os.environ:
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
     #Override debug setting in deployment
-    DEBUG = False
+    DEBUG = True
 
     #Override allowed hosts to only allow hosting on our site
     ALLOWED_HOSTS = ['frozen-meadow-25693.herokuapp.com']
