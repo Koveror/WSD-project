@@ -15,6 +15,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from .tokens import account_activation_token
+from django.core.mail import EmailMessage
+from django import forms
 
 #Homepage view that displays messages and has links to other views
 class HomeView(generic.View):
@@ -281,22 +288,62 @@ class LogoutView(generic.View):
             return redirect('hello:home')
 
 
+class EmailSignupForm(UserCreationForm):
+    email = forms.EmailField(max_length=200, help_text='Required')
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
+
 class SignupView(generic.View):
 
     def get(self, request):
-        return render(request, 'hello/register.html', {'form': UserCreationForm()})
+        return render(request, 'hello/register.html', {'form': EmailSignupForm()})
 
     def post(self, request):
-        form = UserCreationForm(request.POST)
+        form = EmailSignupForm(request.POST)
         if form.is_valid():
-            form.save()
+            #Email authentication here
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            current_site = get_current_site(request)
+            mail_subject = 'Please activate you gamestore account'
+            message = render_to_string('hello/email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid':urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                'token':account_activation_token.make_token(user),
+            })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(
+                        mail_subject, message, to=[to_email]
+            )
+            email.send()
+
             if request.POST.get("developer", "") == 'Yes':
                 dev_group = Group.objects.get(name='Developer')
                 dev_group.user_set.add(User.objects.get(username=request.POST['username']))
-            messages.success(request, 'Account created successfully, please login.')
+            messages.success(request, 'Please confirm your email address to login.')
             return redirect('hello:login')
         else:
             return render(request, 'hello/register.html', {'form': form})
+
+class ActivateAccountView(generic.View):
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.save()
+            login(request, user)
+            messages.success(request, 'Thank you for your email confirmation. Now you can login your account.')
+            return redirect('hello:home')
+        else:   
+            messages.add_message(request, messages.ERROR, 'Activation link is invalid!')
+            return redirect('hello:home')
 
 #A form for buying a specific game. Displayed before moving to payment service.
 #FIXME: What if game is bought twice
@@ -328,9 +375,9 @@ class BuyGameView(LoginRequiredMixin, generic.DetailView):
             m = md5(checksumstr.encode("ascii"))
             checksum = m.hexdigest()
 
-            success_url = self.request.build_absolute_uri('/hello/payment_success')
-            cancel_url = self.request.build_absolute_uri('/hello/payment_cancel')
-            error_url = self.request.build_absolute_uri('/hello/payment_error')
+            success_url = self.request.build_absolute_uri('/payment_success')
+            cancel_url = self.request.build_absolute_uri('/payment_cancel')
+            error_url = self.request.build_absolute_uri('/payment_error')
 
             context = {
                 'sid' : sid,

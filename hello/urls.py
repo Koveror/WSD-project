@@ -26,4 +26,5 @@ urlpatterns = [
     path('payment_success/<str:pk>', views.PaymentSuccessView.as_view(), name='payment_success'),
     path('payment_cancel/<str:pk>', views.PaymentCancelView.as_view(), name='payment_cancel'),
     path('payment_error/<str:pk>', views.PaymentErrorView.as_view(), name='payment_error'),
+    path('activate/<str:uidb64>/<str:token>', views.ActivateAccountView.as_view(), name='activate'),
 ]
