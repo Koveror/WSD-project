@@ -28,7 +28,7 @@
     {% load static %}
     <link href="{% static 'hello/album.css' %}" rel="stylesheet">
   </head>
-
+  <br>
   <body>
     {# Navbar #}
     <div class="basic">
@@ -36,14 +36,12 @@
     </div>
 
     <main role="main">
-      <br>
 
       {% if not is_a_developer %}
         <p> You are not yet a developer. Would you like to become one? </p>
         <a class="nav-link" href="{% url 'hello:become_developer' %}">Yes</a>
       {% else %}
 
-      <br>
         {% if messages %}
           {% for message in messages %}
             {{ message }}
@@ -53,7 +51,7 @@
 
       <div class="album py-5 bg-light">
         <div class="container">
-        <p><b> Add a game </b></p>
+        <h3> Add a game </h3>
 
         <form method="post" action="developer">
           {% csrf_token %}
