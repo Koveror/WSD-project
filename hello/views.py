@@ -138,10 +138,12 @@ class GameSalesView(LoginRequiredMixin, generic.DetailView):
     model = Purchases
     ordering = ['-timestamp']
     def get(self, request, *args, **kwargs):
-        #Test if the user has bought the game
+
         gameid = self.kwargs['pk']
-        if Purchases.objects.filter(gameid=gameid).exists():
-            context = {'purchase': Purchases.objects.filter(gameid = gameid)}
+        #game = Game.objects.get(gameid = gameid)
+        #developerid = game.developerid
+        if Purchases.objects.filter( gameid=gameid, developerid=request.user).exists():
+            context = {'purchases': Purchases.objects.filter(gameid = gameid)}
             return render(request, 'hello/gamesales.html', context)
         else:
             messages.add_message(request, messages.INFO, 'No sales for this one yet')
@@ -320,6 +322,7 @@ class BuyGameView(LoginRequiredMixin, generic.DetailView):
 
             pid = uuid.uuid1().hex
             amount = game.price
+            developerid = game.developerid
 
             checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, sid, amount, secret_key)
             m = md5(checksumstr.encode("ascii"))
@@ -340,6 +343,7 @@ class BuyGameView(LoginRequiredMixin, generic.DetailView):
                 'success_url' : success_url,
                 'cancel_url' : cancel_url,
                 'error_url' : error_url,
+                'developerid' : developerid,
             }
 
             return render(self.request, template_name, context)
