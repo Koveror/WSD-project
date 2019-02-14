@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-import datetime
+from datetime import datetime
 
 def validate_positive(value):
     if (value < 0) :
@@ -50,7 +50,8 @@ class Purchases(models.Model):
     pid = models.CharField(primary_key=True, unique=True, max_length=200)
     gameid = models.ForeignKey(Game, on_delete= models.CASCADE)
     userid = models.ForeignKey(User, on_delete= models.CASCADE)
-    timestamp = models.DateTimeField()
+    developerid = models.ForeignKey(User, on_delete= models.CASCADE, related_name='developerid', null= True)
+    timestamp = models.DateTimeField(default= datetime.now())
     def __str__(self):
         return '{}, {}'.format(self.gameid, self.userid)
 
