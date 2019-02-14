@@ -51,7 +51,7 @@ class Purchases(models.Model):
     gameid = models.ForeignKey(Game, on_delete= models.CASCADE)
     userid = models.ForeignKey(User, on_delete= models.CASCADE)
     developerid = models.ForeignKey(User, on_delete= models.CASCADE, related_name='developerid', null= True)
-    timestamp = models.DateTimeField(default= datetime.now())
+    timestamp = models.DateTimeField(default=datetime.now)
     def __str__(self):
         return '{}, {}'.format(self.gameid, self.userid)
 
