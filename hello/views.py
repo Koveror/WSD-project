@@ -62,14 +62,15 @@ class DeveloperView(LoginRequiredMixin, generic.View):
         games = Game.objects.filter(developerid=request.user)
 
         #Create a new game
-        try:
-            name = request.POST['name']
-            price = request.POST['price']
-            URL = request.POST['URL']
-            description = request.POST['description']
-            primarygenre = request.POST['primarygenre']
-            secondarygenre = request.POST['secondarygenre']
-            newgame = Game.objects.create(name=name,
+        #try:
+        name = request.POST['name']
+        price = request.POST['price']
+        URL = request.POST['URL']
+        description = request.POST['description']
+        primarygenre = request.POST['primarygenre']
+        secondarygenre = request.POST['secondarygenre']
+        image = request.POST['imageToUpload']
+        newgame = Game.objects.create(name=name,
                        price=price,
                        URL=URL,
                        developerid=request.user,
@@ -77,33 +78,29 @@ class DeveloperView(LoginRequiredMixin, generic.View):
                        dateCreated=datetime.now(),
                        description=description,
                        primarygenre=primarygenre,
-                       secondarygenre=secondarygenre
+                       secondarygenre=secondarygenre,
+                       image=image
                        )
-            context = {'is_a_developer': is_member, 'games': games}
-            messages.success(request, 'You succesfully added a game')
-            return render(request, 'hello/developer.html', context)
-        except KeyError:
-            context = {'is_a_developer': is_member, 'games': games}
-            messages.add_message(request, messages.INFO, 'Name already taken (or another error)')
-            return render(request, 'hello/developer.html', context)
+        context = {'is_a_developer': is_member, 'games': games}
+        messages.success(request, 'You succesfully added a game')
+        return render(request, 'hello/developer.html', context)
+        #except:
+            #context = {'is_a_developer': is_member, 'games': games}
+            #messages.add_message(request, messages.INFO, 'Name already taken (or another error)')
+            #return render(request, 'hello/developer.html', context)
 
-class ModifyGameView(LoginRequiredMixin, generic.View):
+class ModifyGameView(LoginRequiredMixin, generic.DetailView):
     login_url = 'hello:login'
-
-    def get(self, request, *args, **kwargs):
-        template_name = 'hello/modifygame.html'
-        gameid = self.kwargs['pk']
-        if Game.objects.filter(developerid=request.user, gameid=gameid).exists():
-            return render(request, template_name, {'game':Game.objects.filter(gameid=gameid)})
-        else:
-            messages.add_message(request, messages.INFO, '''You don't have access to this game''')
-            return redirect('hello:home')
+    model = Game
+    template_name = 'hello/modifygame.html'
 
     def post(self, request, *args, **kwargs):
         #Test if user belongs to developer-group
         is_member = request.user.groups.filter(name='Developer').exists()
+        #Generate a list of developer's games
+        games = Game.objects.filter(developerid=request.user)
+        #To-be-modified game's id
         gameid = self.kwargs['pk']
-
         #Check if the developer is the owner of the game
         if Game.objects.filter(developerid=request.user, gameid=gameid).exists():
             #Overwrite old values
@@ -123,8 +120,12 @@ class ModifyGameView(LoginRequiredMixin, generic.View):
                    primarygenre=primarygenre,
                    secondarygenre=secondarygenre
                    )
+            context = {'is_a_developer': is_member, 'games': games}
             messages.success(request, 'You succesfully modified a game')
             return redirect('hello:developer')
+        else:
+            messages.add_message(request, messages.INFO, '''You don't have permission to modify this game''' )
+            return redirect('hello:home')
 
 class HighScoreView(generic.ListView):
     template_name = 'hello/highscores.html'
