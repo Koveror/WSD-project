@@ -51,7 +51,7 @@
                 {% load static %}
                 <img src="{% static "hello/tetris_img.jpg" %}" alt="My image" width="100%" height="225">
                 <div class="card-body">
-                  <p class="card-text">Name: {{game.name}}</p>
+                  <p class="card-text"><strong>{{game.name}}</strong></p>
                   <p class="card-text">Primary genre: {{game.primarygenre}}</p>
                   {% if game.secondarygenre %}
                     <p class="card-text">Secondary genre: {{game.secondarygenre}}</p>
