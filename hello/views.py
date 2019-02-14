@@ -22,6 +22,8 @@ from django.template.loader import render_to_string
 from .tokens import account_activation_token
 from django.core.mail import EmailMessage
 from django import forms
+from django.core.mail import send_mail
+
 
 #Homepage view that displays messages and has links to other views
 class HomeView(generic.View):
