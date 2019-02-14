@@ -72,6 +72,7 @@ class DeveloperView(LoginRequiredMixin, generic.View):
             description = request.POST['description']
             primarygenre = request.POST['primarygenre']
             secondarygenre = request.POST['secondarygenre']
+            image = request.POST['imageToUpload']
             newgame = Game.objects.create(name=name,
                        price=price,
                        URL=URL,
@@ -80,7 +81,8 @@ class DeveloperView(LoginRequiredMixin, generic.View):
                        dateCreated=datetime.now(),
                        description=description,
                        primarygenre=primarygenre,
-                       secondarygenre=secondarygenre
+                       secondarygenre=secondarygenre,
+                       image=image
                        )
             context = {'is_a_developer': is_member, 'games': games}
             messages.success(request, 'You succesfully added a game')
@@ -123,14 +125,14 @@ class ModifyGameView(LoginRequiredMixin, generic.DetailView):
                     secondarygenre=secondarygenre
                     )
             except KeyError:
-                messages.add_message(request, messages.ERROR, 'Something went wrong')
+                messages.add_message(request, messages.ERROR, '''You don't have permission to modify this game''')
                 return redirect('hello:developer')
-            
+
             context = {'is_a_developer': is_member, 'games': games}
             messages.success(request, 'You succesfully modified a game')
             return redirect('hello:developer')
-        
-class GameSalesView(LoginRequiredMixin, generic.DetailView): 
+
+class GameSalesView(LoginRequiredMixin, generic.DetailView):
     login_url = 'hello:login'
     template_name = 'hello/gamesales.html'
     model = Purchases
@@ -297,7 +299,7 @@ class SignupView(generic.View):
 #A form for buying a specific game. Displayed before moving to payment service.
 #FIXME: What if game is bought twice
 class BuyGameView(LoginRequiredMixin, generic.DetailView):
-    
+
     template_name = 'hello/buygame.html'
     login_url = 'hello:login'
 

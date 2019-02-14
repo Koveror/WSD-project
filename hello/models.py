@@ -1,9 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
-
+from django import forms
 from django.core.exceptions import ValidationError
-
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -26,6 +25,7 @@ class Game(models.Model):
     dateCreated = models.DateTimeField()
     URL = models.CharField(max_length=200)
     description = models.TextField(max_length=400, default="no description")
+    image = models.ImageField(upload_to='hello/static/hello', default='hello/static/hello/no_image.png')
     def __str__(self):
         return self.name
 

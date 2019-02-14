@@ -51,15 +51,15 @@
             {% for purchase in purchases %}
             <div class="col-md-4">
               <div class="card mb-4 shadow-sm">
-                <h2> {{purchase.gameid.name}} </h2>
                 {% load static %}
-                <img src="{% static "hello/tetris_img.jpg" %}" alt="My image" width="100%" height="225">
+                <img src="{% static "hello/{{purchases.gameid.image}}" %}" alt="My image" width="100%" height="225">
                 <div class="card-body">
-                  <p class="card-text">Primary genre: {{purchase.gameid.primarygenre}}</p>
+                  <h4> {{purchase.gameid.name}} </h4><br>
+                  <p class="card-text"> <b>Primary genre:</b> {{purchase.gameid.primarygenre}} </p>
                   {% if purchase.gameid.secondarygenre %}
-                    <p class="card-text">Secondary genre: {{purchase.gameid.secondarygenre}}</p>
+                    <p class="card-text"> <b>Secondary genre:</b> {{purchase.gameid.secondarygenre}} </p>
                   {% endif %}
-                  <p>Description: {{purchase.gameid.description}}</p>
+                  <p> <b>Description:</b> {{purchase.gameid.description}}</p>
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
                       <input type="button" id="play" onclick="location.href='game/{{purchase.gameid.gameid}}';" value="Play"/>
@@ -72,7 +72,7 @@
           </div>
         </div>
       </div>
-    
+
       {% else %}
         <p> You have to login in order to see your gamelist. </p>
       {% endif %}

@@ -35,9 +35,7 @@
       {% include "hello/navbar.html" %}
     </div>
 
-    <main role="main" class="container">
-      <br>
-      <br>
+    <main role="main">
       <br>
 
       {% if not is_a_developer %}
@@ -45,29 +43,39 @@
         <a class="nav-link" href="{% url 'hello:become_developer' %}">Yes</a>
       {% else %}
 
+      <br>
+        {% if messages %}
+          {% for message in messages %}
+            {{ message }}
+          {% endfor %}
+        <br>
+        {% endif %}
+
       <div class="album py-5 bg-light">
         <div class="container">
         <p><b> Add a game </b></p>
+
         <form method="post" action="developer">
           {% csrf_token %}
           Name: <input type="text" name="name"><br>
           Price: <input type="text" name="price"><br>
           URL: <input type="text" name="URL"><br>
           Description: <input type="text" name="description"><br>
+          Image: <input type="file" name="imageToUpload"> <br>
           Primary genre:
-                        <select name="primarygenre">
-                          <option value="other">Other</option>
-                          <option value="shooter">Shooter</option>
-                          <option value="puzzle">Puzzle</option>
-                          <option value="fighting">Fighting</option>
-                          <option value="RPG">RPG</option>
-                          <option value="strategy">Strategy</option>
-                          <option value="platformer">Platformer</option>
-                          <option value="casual">Casual</option>
-                          <option value="party">Party</option>
-                          <option value="survival">Survival</option>
-                          <option value="multiplayer">Multiplayer</option>
-                        </select><br>
+                <select name="primarygenre">
+                  <option value="other">Other</option>
+                  <option value="shooter">Shooter</option>
+                  <option value="puzzle">Puzzle</option>
+                  <option value="fighting">Fighting</option>
+                  <option value="RPG">RPG</option>
+                  <option value="strategy">Strategy</option>
+                  <option value="platformer">Platformer</option>
+                  <option value="casual">Casual</option>
+                  <option value="party">Party</option>
+                  <option value="survival">Survival</option>
+                  <option value="multiplayer">Multiplayer</option>
+                </select><br>
           Secondary genre (optional):
                         <select name="secondarygenre">
                           <option value="none"></option>
@@ -111,16 +119,8 @@
         {% endfor %}
         </div>
       </div>
+      {% endif %}
     </div>
-
-    <br>
-      {% if messages %}
-        {% for message in messages %}
-          {{ message }}
-        {% endfor %}
-      <br><br>
-      {% endif %}
-      {% endif %}
     </main>
   </body>
 </html>
