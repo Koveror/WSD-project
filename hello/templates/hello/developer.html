@@ -76,24 +76,24 @@
                   <option value="multiplayer">Multiplayer</option>
                 </select><br>
           Secondary genre (optional):
-                <select name="secondarygenre">
-                  <option value="none"></option>
-                  <option value="shooter">Shooter</option>
-                  <option value="puzzle">Puzzle</option>
-                  <option value="fighting">Fighting</option>
-                  <option value="RPG">RPG</option>
-                  <option value="strategy">Strategy</option>
-                  <option value="platformer">Platformer</option>
-                  <option value="casual">Casual</option>
-                  <option value="party">Party</option>
-                  <option value="survival">Survival</option>
-                  <option value="multiplayer">Multiplayer</option>
-                </select><br>
-                <input type="submit" value="Submit">
-              </form>
-            </div>
-
+                        <select name="secondarygenre">
+                          <option value="none"></option>
+                          <option value="shooter">Shooter</option>
+                          <option value="puzzle">Puzzle</option>
+                          <option value="fighting">Fighting</option>
+                          <option value="RPG">RPG</option>
+                          <option value="strategy">Strategy</option>
+                          <option value="platformer">Platformer</option>
+                          <option value="casual">Casual</option>
+                          <option value="party">Party</option>
+                          <option value="survival">Survival</option>
+                          <option value="multiplayer">Multiplayer</option>
+                        </select><br>
+                        <input type="submit" value="Submit">
+        </form>
+    </div>
   </div>
+
     <div class="album py-5 bg-light">
       <div class="container">
         <h3> My games </h3><br>
@@ -107,7 +107,7 @@
                 <p class="card-text">{{game.name}}</p>
                 <div class="d-flex justify-content-between align-items-center">
                   <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">View sales</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary"id="gamesales" onclick="location.href='gamesales/{{game.gameid}}';">View sales</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="play" onclick="location.href='modify_game/{{game.gameid}}';">Edit</button>
                   </div>
                   <small class="text-muted">9 mins</small>
