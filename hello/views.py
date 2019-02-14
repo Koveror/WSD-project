@@ -287,7 +287,7 @@ class LogoutView(generic.View):
             messages.add_message(request, messages.INFO, 'You are not logged in')
             return redirect('hello:home')
 
-
+#Custom signup form
 class EmailSignupForm(UserCreationForm):
     email = forms.EmailField(max_length=200, help_text='Required')
     class Meta:
