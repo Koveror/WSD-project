@@ -35,14 +35,12 @@
     </div>
 
     <main role="main">
-      <br>
 
       {% if not is_a_developer %}
         <p> You are not yet a developer. Would you like to become one? </p>
         <a class="nav-link" href="{% url 'hello:become_developer' %}">Yes</a>
       {% else %}
 
-      <br>
         {% if messages %}
           {% for message in messages %}
             {{ message }}

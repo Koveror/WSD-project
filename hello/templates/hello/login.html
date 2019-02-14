@@ -46,11 +46,9 @@
             </form>
 
             {% if messages %}
-              <ul>
-                {% for message in messages %}
-                  {{ message }}
-                {% endfor %}
-              </ul>
+              {% for message in messages %}
+                {{ message }}
+              {% endfor %}
             {% endif %}
 
         </div>
