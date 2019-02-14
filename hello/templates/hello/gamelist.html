@@ -28,7 +28,8 @@
         }
       }
     </style>
-    <link href="starter-template.css" rel="stylesheet">
+    {% load static %}
+    <link href="{% static 'hello/album.css' %}" rel="stylesheet">
 
   </head>
 
@@ -40,6 +41,7 @@
 
     <main role="main">
       {% if request.user.is_authenticated %}
+      <br>
     </div>
       <div class="album py-5 bg-light">
         <div class="container">

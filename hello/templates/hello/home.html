@@ -25,7 +25,8 @@
         }
       }
     </style>
-    <link href="starter-template.css" rel="stylesheet">
+    {% load static %}
+    <link href="{% static 'hello/starter-template.css' %}" rel="stylesheet">
   </head>
 
   <body>
@@ -34,7 +35,7 @@
       {% include "hello/navbar.html" %}
     </div>
 
-    <main role="main" class=>
+    <main role="main" class="container">
       <section class="jumbotron text-center">
         <div class="starter-template">
           <h1>Welcome to Gamestore!</h1>

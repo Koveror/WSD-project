@@ -25,9 +25,10 @@
         }
       }
     </style>
-    <link href="album.css" rel="stylesheet">
+    {% load static %}
+    <link href="{% static 'hello/album.css' %}" rel="stylesheet">
   </head>
-
+  <br>
   <body>
     {# Navbar #}
     <div class="basic">
@@ -50,7 +51,7 @@
 
       <div class="album py-5 bg-light">
         <div class="container">
-        <p><b> Add a game </b></p>
+        <h3> Add a game </h3>
 
         <form method="post" action="developer">
           {% csrf_token %}
