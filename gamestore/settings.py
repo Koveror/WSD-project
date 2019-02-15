@@ -132,7 +132,7 @@ if "DYNO" in os.environ:
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
     #Override debug setting in deployment
-    DEBUG = False
+    DEBUG = True
 
     #Override allowed hosts to only allow hosting on our site
     ALLOWED_HOSTS = ['frozen-meadow-25693.herokuapp.com']

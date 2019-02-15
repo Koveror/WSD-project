@@ -351,7 +351,7 @@ class ActivateAccountView(generic.View):
             user.is_active = True
             user.save()
             login(request, user)
-            messages.success(request, 'Thank you for your email confirmation. Now you can login your account.')
+            messages.success(request, 'Thank you for your email confirmation. You are now logged in.')
             return redirect('hello:home')
         else:   
             messages.add_message(request, messages.ERROR, 'Activation link is invalid!')
