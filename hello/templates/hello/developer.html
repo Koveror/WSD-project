@@ -26,10 +26,10 @@
       }
     </style>
     {% load static %}
-    <link href="{% static 'hello/starter-template.css' %}" rel="stylesheet">
+    <link href="{% static 'hello/album.css' %}" rel="stylesheet">
     <link href="{% static 'hello/messages.css' %}" rel="stylesheet">
+
   </head>
-  <br>
   <body>
     {# Navbar #}
     <div class="basic">
@@ -37,22 +37,24 @@
     </div>
 
     <main role="main">
+      <div class="album py-5 bg-light">
+        <div class="container">
+          <br>
+
+          {% if messages %}
+          <ul class="messages">
+              {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+              {% endfor %}
+          </ul>
+          {% endif %}
 
       {% if not is_a_developer %}
         <p> You are not yet a developer. Would you like to become one? </p>
-        <a class="nav-link" href="{% url 'hello:become_developer' %}">Yes</a>
+        <form action="{% url 'hello:become_developer' %}">
+          <input type="submit" value="Yes" />
+        </form>
       {% else %}
-
-      {% if messages %}
-      <ul class="messages">
-          {% for message in messages %}
-          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-          {% endfor %}
-      </ul>
-      {% endif %}
-
-      <div class="album py-5 bg-light">
-        <div class="container">
         <h3> Add a game </h3>
 
         <form method="post" action="developer">
@@ -77,23 +79,23 @@
                   <option value="multiplayer">Multiplayer</option>
                 </select><br>
           Secondary genre (optional):
-                        <select name="secondarygenre">
-                          <option value="none"></option>
-                          <option value="shooter">Shooter</option>
-                          <option value="puzzle">Puzzle</option>
-                          <option value="fighting">Fighting</option>
-                          <option value="RPG">RPG</option>
-                          <option value="strategy">Strategy</option>
-                          <option value="platformer">Platformer</option>
-                          <option value="casual">Casual</option>
-                          <option value="party">Party</option>
-                          <option value="survival">Survival</option>
-                          <option value="multiplayer">Multiplayer</option>
-                        </select><br>
-                        <input type="submit" value="Submit">
+                <select name="secondarygenre">
+                  <option value="none"></option>
+                  <option value="shooter">Shooter</option>
+                  <option value="puzzle">Puzzle</option>
+                  <option value="fighting">Fighting</option>
+                  <option value="RPG">RPG</option>
+                  <option value="strategy">Strategy</option>
+                  <option value="platformer">Platformer</option>
+                  <option value="casual">Casual</option>
+                  <option value="party">Party</option>
+                  <option value="survival">Survival</option>
+                  <option value="multiplayer">Multiplayer</option>
+                </select><br>
+                <input type="submit" value="Submit">
         </form>
+      </div>
     </div>
-  </div>
 
     <div class="album py-5 bg-light">
       <div class="container">
