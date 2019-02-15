@@ -27,6 +27,7 @@
     </style>
     {% load static %}
     <link href="{% static 'hello/starter-template.css' %}" rel="stylesheet">
+    <link href="{% static 'hello/messages.css' %}" rel="stylesheet">
   </head>
 
   <body>
@@ -38,12 +39,13 @@
       <section class="jumbotron text-center">
         <div class="starter-template">
       {% block content %}
+
         {% if messages %}
-          <ul>
+        <ul class="messages">
             {% for message in messages %}
-              <li>{{ message }}</li>
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
             {% endfor %}
-          </ul>
+        </ul>
         {% endif %}
 
         <h2>Create account</h2>

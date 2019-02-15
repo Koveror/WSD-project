@@ -289,7 +289,7 @@ class LogoutView(generic.View):
             messages.add_message(request, messages.INFO, 'You are not logged in')
             return redirect('hello:home')
 
-#Custom signup form
+#Custom signup form for email confirmation
 class EmailSignupForm(UserCreationForm):
     email = forms.EmailField(max_length=200, help_text='Required')
     class Meta:
@@ -305,20 +305,12 @@ class SignupView(generic.View):
         form = EmailSignupForm(request.POST)
         if form.is_valid():
             #Email authentication here
-            user = form.save(commit=False)
-            user.is_active = False
-            user.save()
-            current_site = get_current_site(request)
+            message = self.create_confirmation_email(request, form)
+
             mail_subject = 'Please activate you gamestore account'
-            message = render_to_string('hello/email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid':urlsafe_base64_encode(force_bytes(user.pk)).decode(),
-                'token':account_activation_token.make_token(user),
-            })
             to_email = form.cleaned_data.get('email')
             email = EmailMessage(
-                        mail_subject, message, to=[to_email]
+                mail_subject, message, to=[to_email]
             )
             email.send()
 
@@ -326,9 +318,27 @@ class SignupView(generic.View):
                 dev_group = Group.objects.get(name='Developer')
                 dev_group.user_set.add(User.objects.get(username=request.POST['username']))
             messages.success(request, 'Please confirm your email address to login.')
+            #Since no SMTP server is configured, give the link
+            messages.add_message(request, messages.INFO, 'Since we do not have a smtp server, the confirmation email is also here.')
+            messages.add_message(request, messages.INFO, message)
             return redirect('hello:login')
         else:
             return render(request, 'hello/register.html', {'form': form})
+
+    def create_confirmation_email(self, request, form):
+        
+        user = form.save(commit=False)
+        user.is_active = False
+        user.save()
+        current_site = get_current_site(request)
+        message = render_to_string('hello/email.html', {
+            'user': user,
+            'domain': current_site.domain,
+            'uid':urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+            'token':account_activation_token.make_token(user),
+        })
+        return message
+
 
 class ActivateAccountView(generic.View):
     def get(self, request, uidb64, token):

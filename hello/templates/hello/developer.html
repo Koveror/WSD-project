@@ -27,6 +27,7 @@
     </style>
     {% load static %}
     <link href="{% static 'hello/starter-template.css' %}" rel="stylesheet">
+    <link href="{% static 'hello/messages.css' %}" rel="stylesheet">
   </head>
   <br>
   <body>
@@ -42,12 +43,13 @@
         <a class="nav-link" href="{% url 'hello:become_developer' %}">Yes</a>
       {% else %}
 
-        {% if messages %}
+      {% if messages %}
+      <ul class="messages">
           {% for message in messages %}
-            {{ message }}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
           {% endfor %}
-        <br>
-        {% endif %}
+      </ul>
+      {% endif %}
 
       <div class="album py-5 bg-light">
         <div class="container">

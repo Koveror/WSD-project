@@ -1,0 +1,15 @@
+.messages {
+    list-style-type: none;
+}
+.success {
+    color: green;
+}
+.error {
+    color: red;
+}
+.info {
+    color: lightblue;
+}
+.warning {
+    color: orange
+}

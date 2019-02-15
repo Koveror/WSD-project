@@ -27,6 +27,7 @@
     </style>
     {% load static %}
     <link href="{% static 'hello/starter-template.css' %}" rel="stylesheet">
+    <link href="{% static 'hello/messages.css' %}" rel="stylesheet">
   </head>
 
   <body>
@@ -42,11 +43,11 @@
           <p class="lead">Here you can buy, sell and play games.</p>
 
           {% if messages %}
-            <ul>
+          <ul class="messages">
               {% for message in messages %}
-                {{ message }}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
               {% endfor %}
-            </ul>
+          </ul>
           {% endif %}
 
         </div>

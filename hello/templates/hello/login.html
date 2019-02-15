@@ -27,6 +27,7 @@
     </style>
     {% load static %}
     <link href="{% static 'hello/starter-template.css' %}" rel="stylesheet">
+    <link href="{% static 'hello/messages.css' %}" rel="stylesheet">
   </head>
 
   <body>
@@ -47,9 +48,11 @@
             </form>
 
             {% if messages %}
-              {% for message in messages %}
-                {{ message }}
-              {% endfor %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
             {% endif %}
 
         </div>
