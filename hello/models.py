@@ -14,7 +14,6 @@ def validate_positive(value):
 
 
 class Game(models.Model):
-
     gameid = models.CharField(primary_key=True, unique=True, default=uuid.uuid4, max_length=200)
     name = models.CharField(max_length=200, unique=True)
     developerid = models.ForeignKey(User, on_delete= models.CASCADE)

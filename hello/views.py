@@ -93,7 +93,6 @@ class DeveloperView(LoginRequiredMixin, generic.View):
             description = request.POST['description']
             primarygenre = request.POST['primarygenre']
             secondarygenre = request.POST['secondarygenre']
-            image = request.POST['imageToUpload']
             newgame = Game.objects.create(name=name,
                        price=price,
                        URL=URL,
@@ -102,8 +101,7 @@ class DeveloperView(LoginRequiredMixin, generic.View):
                        dateCreated=datetime.now(),
                        description=description,
                        primarygenre=primarygenre,
-                       secondarygenre=secondarygenre,
-                       image=image
+                       secondarygenre=secondarygenre
                        )
 
             messages.success(request, 'You succesfully added a game')
@@ -568,4 +566,3 @@ def game_list(request):
 class GameViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.GameSerializer
     queryset = Game.objects.all()
-
