@@ -222,7 +222,10 @@ class GameSaveView(LoginRequiredMixin, generic.DetailView):
 
             save_message = {'message' : 'Successfully saved'}
             return JsonResponse(save_message)
-        except KeyError:    #FIXME: Add more error handling
+        except ValueError:
+            save_message = {'message' : 'Malformed save message'}
+            return JsonResponse(save_message)
+        except KeyError:
             save_message = {'message' : 'Something went wrong'}
             return JsonResponse(save_message)
 
