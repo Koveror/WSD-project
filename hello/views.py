@@ -45,8 +45,7 @@ class BecomeDeveloperView(LoginRequiredMixin, generic.View):
     login_url = 'hello:login'
 
     #Add the user to the developer-group which can be assumed exists
-    #FIXME: Should this be post instead?
-    def get(self, request):
+    def post(self, request):
         Group.objects.get(name='Developer').user_set.add(request.user)
         messages.success(request, 'You succesfully became a developer')
         return redirect('hello:home')
@@ -163,7 +162,6 @@ class HighScoreView(generic.ListView):
     model = Score
     ordering = ['gameid', '-score']
 
-#FIXME: Buying games while not logged in?
 class ShopView(generic.ListView):
     template_name = 'hello/shop.html'
     model = Game
