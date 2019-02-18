@@ -48,6 +48,14 @@ function receiveMessage(event)
     if(event.data.messageType == "SCORE") {
         submitScore(event);
     }
+    if(event.data.messageType == "SETTING") {
+        adjustSettings(event);
+    }
+}
+
+//Adjust resolution of the game
+function adjustSettings(event) {
+    
 }
 
 //Save game state to database
