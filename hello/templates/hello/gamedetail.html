@@ -34,7 +34,6 @@
     {#This is a script for listening to games.#}
     {% load static %}
     <script src="{% static 'hello/listen_game.js' %}"></script>
-
   </head>
 
   <body>
@@ -46,7 +45,7 @@
     <h1>{{game}}</h1>
 
     {#Any game can be added to a page in an iframe like this#}
-    <iframe src="{{game.URL}}" width = 1000 height = 500></iframe>
+    <iframe src="{{game.URL}}" width = 1000 height = 500 id=gameiframe></iframe>
 
     {#This form is only used to create the URL to the page. Check listen_game.js for details.#}
     <form url="{% url 'hello:save_game' game.gameid %}" method="post" id="save_form">
@@ -56,5 +55,7 @@
     <form url="{% url 'hello:submit_score' game.gameid %}" method="post" id="score_form">
       {% csrf_token %}
     </form>
+
+
 
   </body>
