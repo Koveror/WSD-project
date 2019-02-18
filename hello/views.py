@@ -370,7 +370,6 @@ class ActivateAccountView(generic.View):
             return redirect('hello:home')
 
 #A form for buying a specific game. Displayed before moving to payment service.
-#FIXME: What if game is bought twice
 class BuyGameView(LoginRequiredMixin, generic.DetailView):
 
     template_name = 'hello/buygame.html'
@@ -383,6 +382,11 @@ class BuyGameView(LoginRequiredMixin, generic.DetailView):
         try:
             gameid = self.kwargs['pk']
             game = Game.objects.get(gameid = gameid)
+
+            game_in_purchases = Purchases.objects.filter(gameid = gameid, userid=self.request.user)
+            if game_in_purchases.count() > 0:
+                messages.info(self.request, 'You already own this game. Go to gamelist to play it.')
+                return redirect('hello:home')
 
             #Secret values are read from enviromental variables.
             #Set up your own variables by running on the command line:
