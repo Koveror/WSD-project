@@ -1,6 +1,7 @@
-from django.urls import path
-
+from django.urls import path, include
 from . import views
+
+
 
 app_name = 'hello'
 urlpatterns = [
@@ -26,4 +27,6 @@ urlpatterns = [
     path('payment_cancel/<str:pk>', views.PaymentCancelView.as_view(), name='payment_cancel'),
     path('payment_error/<str:pk>', views.PaymentErrorView.as_view(), name='payment_error'),
     path('activate/<str:uidb64>/<str:token>', views.ActivateAccountView.as_view(), name='activate'),
+    path('game_api', views.game_list, name='game_api'),
+
 ]

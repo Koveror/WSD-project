@@ -26,6 +26,9 @@ from django.core.mail import EmailMessage
 from django import forms
 from django.core.mail import send_mail
 
+from rest_framework import viewsets
+from . import serializers
+
 
 #Homepage view that displays messages and has links to other views
 class HomeView(generic.View):
@@ -542,3 +545,25 @@ class PaymentErrorView(generic.View):
     def get(self, *args, **kwargs):
         messages.add_message(self.request, messages.ERROR, "There was an error in handling your payment.")
         return redirect("hello:home")
+
+# For API
+def game_list(request):
+    result = []
+    for game in Game.objects.all():
+        result.append({ 'name': game.name })
+        result.append({ 'price': game.price })
+        result.append({ 'numberSold': game.numberSold })
+        result.append({ 'primarygenre': game.primarygenre })
+        result.append({ 'secondarygenre': game.secondarygenre })
+        result.append({ 'dateCreated': game.dateCreated })
+        result.append({ 'URL': game.URL })
+        result.append({ 'description': game.description })
+
+
+    return JsonResponse(result, safe=False)
+
+# For API
+class GameViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.GameSerializer
+    queryset = Game.objects.all()
+
