@@ -17,6 +17,7 @@ urlpatterns = [
     path('logout', views.LogoutView.as_view(), name='logout'),
     path('register', views.SignupView.as_view(), name='register'),
     path('game/<str:pk>/', views.GameDetailView.as_view(), name='gamedetail'),
+    path('load_game/<str:pk>', views.GameLoadView.as_view(), name = 'load_game'),
     path('save_game/<str:pk>/', views.GameSaveView.as_view(), name='save_game'),
     path('score/<str:pk>/', views.ScoreDetailView.as_view(), name='scoredetail'),
     path('submit_score/<str:pk>/', views.SubmitScoreView.as_view(), name='submit_score'),
