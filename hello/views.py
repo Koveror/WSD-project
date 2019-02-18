@@ -40,7 +40,14 @@ class GameListView(LoginRequiredMixin, generic.View):
 
     def get(self, request):
         purchases = Purchases.objects.filter(userid=request.user)
-        return render(request, 'hello/gamelist.html', {'purchases': purchases})
+        context = {'purchases': purchases, 'filter': ''}
+        return render(request, 'hello/gamelist.html', context)
+
+    def post(self, request):
+        purchases = Purchases.objects.filter(userid=request.user)
+        filter = request.POST['genre']
+        context = {'purchases': purchases, 'filter': filter}
+        return render(request, 'hello/gamelist.html', context)
 
 #View used to add users to developer group
 class BecomeDeveloperView(LoginRequiredMixin, generic.View):
@@ -131,12 +138,10 @@ class ModifyGameView(LoginRequiredMixin, generic.DetailView):
                 description = request.POST['description']
                 primarygenre = request.POST['primarygenre']
                 secondarygenre = request.POST['secondarygenre']
-                newgame = Game.objects.filter(pk=gameid).update(name=name,
+                newgame = Game.objects.filter(pk=gameid).update(
+                    name=name,
                     price=price,
                     URL=URL,
-                    developerid=request.user,
-                    numberSold=0,
-                    dateCreated=datetime.now(),
                     description=description,
                     primarygenre=primarygenre,
                     secondarygenre=secondarygenre
@@ -176,9 +181,18 @@ class HighScoreView(generic.ListView):
     model = Score
     ordering = ['gameid', '-score']
 
-class ShopView(generic.ListView):
-    template_name = 'hello/shop.html'
-    model = Game
+class ShopView(generic.View):
+
+    def get(self, request):
+        games = Game.objects.all()
+        context = {'games': games, 'filter': ''}
+        return render(request, 'hello/shop.html', context)
+
+    def post(self, request):
+        games = Game.objects.all()
+        filter = request.POST['genre']
+        context = {'games': games, 'filter': filter}
+        return render(request, 'hello/shop.html', context)
 
 #Generic view for a single game
 class GameDetailView(LoginRequiredMixin, generic.View):

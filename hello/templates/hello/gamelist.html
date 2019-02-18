@@ -46,8 +46,29 @@
       <div class="album py-5 bg-light">
         <div class="container">
           <h3> My games </h3><br>
+          <form method="post" action="gamelist">
+            {% csrf_token %}
+            Filter games by genre
+                  <select name="genre">
+                    <option value=""></option>
+                    <option value="Other">Other</option>
+                    <option value="Shooter">Shooter</option>
+                    <option value="Puzzle">Puzzle</option>
+                    <option value="Fighting">Fighting</option>
+                    <option value="RPG">RPG</option>
+                    <option value="Strategy">Strategy</option>
+                    <option value="Platformer">Platformer</option>
+                    <option value="Casual">Casual</option>
+                    <option value="Party">Party</option>
+                    <option value="Survival">Survival</option>
+                    <option value="Multiplayer">Multiplayer</option>
+                  </select><br>
+                  <input type="submit" value="Filter">
+          </form>
+          <br>
           <div class="row">
             {% for purchase in purchases %}
+            {% if not filter or purchase.gameid.primarygenre == filter or purchase.gameid.secondarygenre == filter %}
             <div class="col-md-4">
               <div class="card mb-4 shadow-sm">
                 {% load static %}
@@ -67,6 +88,7 @@
                 </div>
               </div>
             </div>
+          {% endif %}
           {% endfor %}
           </div>
         </div>
