@@ -4,9 +4,11 @@ import uuid
 from datetime import datetime
 from hashlib import md5
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.views import generic
 import django.core.exceptions
+from django.db import IntegrityError
+from django.core.exceptions import ValidationError
 from .models import Game, Score, GameState, Purchases
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -75,6 +77,7 @@ class DeveloperView(LoginRequiredMixin, generic.View):
 
         #Create a new game
         try:
+            context = {'is_a_developer': is_member, 'games': games}
             name = request.POST['name']
             price = request.POST['price']
             URL = request.POST['URL']
@@ -93,13 +96,19 @@ class DeveloperView(LoginRequiredMixin, generic.View):
                        secondarygenre=secondarygenre,
                        image=image
                        )
-            context = {'is_a_developer': is_member, 'games': games}
+
             messages.success(request, 'You succesfully added a game')
-            return render(request, 'hello/developer.html', context)
-        except KeyError:
-            context = {'is_a_developer': is_member, 'games': games}
+            return HttpResponseRedirect(request.path)
+        except IntegrityError:
+            messages.add_message(request, messages.ERROR, 'Name already taken')
+            return HttpResponseRedirect(request.path)
+        except ValidationError:
+            messages.add_message(request, messages.ERROR, 'Please populate all fields correctly')
+            return HttpResponseRedirect(request.path)
+        except:
             messages.add_message(request, messages.ERROR, 'Something went wrong')
-            return render(request, 'hello/developer.html', context)
+            return HttpResponseRedirect(request.path)
+
 
 class ModifyGameView(LoginRequiredMixin, generic.DetailView):
     model = Game
@@ -133,13 +142,18 @@ class ModifyGameView(LoginRequiredMixin, generic.DetailView):
                     primarygenre=primarygenre,
                     secondarygenre=secondarygenre
                     )
-            except KeyError:
-                messages.add_message(request, messages.ERROR, '''You don't have permission to modify this game''')
+                messages.success(request, 'You succesfully modified a game')
                 return redirect('hello:developer')
 
-            context = {'is_a_developer': is_member, 'games': games}
-            messages.success(request, 'You succesfully modified a game')
-            return redirect('hello:developer')
+            except IntegrityError:
+                messages.add_message(request, messages.ERROR, 'Name already taken')
+                return HttpResponseRedirect(request.path)
+            except ValidationError:
+                messages.add_message(request, messages.ERROR, 'Please populate all fields correctly')
+                return HttpResponseRedirect(request.path)
+            except:
+                messages.add_message(request, messages.ERROR, 'Something went wrong')
+                return HttpResponseRedirect(request.path)
 
 class GameSalesView(LoginRequiredMixin, generic.DetailView):
     login_url = 'hello:login'
@@ -326,7 +340,7 @@ class SignupView(generic.View):
             return render(request, 'hello/register.html', {'form': form})
 
     def create_confirmation_email(self, request, form):
-        
+
         user = form.save(commit=False)
         user.is_active = False
         user.save()
@@ -353,7 +367,7 @@ class ActivateAccountView(generic.View):
             login(request, user)
             messages.success(request, 'Thank you for your email confirmation. Now you can login your account.')
             return redirect('hello:home')
-        else:   
+        else:
             messages.add_message(request, messages.ERROR, 'Activation link is invalid!')
             return redirect('hello:home')
 

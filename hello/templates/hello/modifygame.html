@@ -27,6 +27,7 @@
     </style>
     {% load static %}
     <link href="{% static 'hello/album.css' %}" rel="stylesheet">
+    <link href="{% static 'hello/messages.css' %}" rel="stylesheet">
   </head>
 
   <body>
@@ -37,13 +38,22 @@
 
     <div class="album py-5 bg-light">
       <div class="container">
+        <br>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
       <p><b> Modify a game </b></p>
       <form method="post" URL="{% url 'hello:modify_game' game.gameid %}">
         {% csrf_token %}
         Name: <input type="text" name="name" value="{{game.name}}"><br>
         Price: <input type="text" name="price" value="{{game.price}}"><br>
         URL: <input type="text" name="URL" value="{{game.URL}}"><br>
-        Description: <input type="text" name="description" value="{{game.description}}"><br>
+        Description: <input type="text" name="description" value="{{game.description}}" style="width:400px;"><br>
         Primary genre:
                       <select name="primarygenre" value="{{game.primarygenre}}">
                         <option value="other">Other</option>

@@ -62,7 +62,7 @@
           Name: <input type="text" name="name"><br>
           Price: <input type="text" name="price"><br>
           URL: <input type="text" name="URL"><br>
-          Description: <input type="text" name="description"><br>
+          Description: <input type="text" name="description" style="width:400px;"><br>
           Image: <input type="file" name="imageToUpload"> <br>
           Primary genre:
                 <select name="primarygenre">
@@ -94,11 +94,9 @@
                 </select><br>
                 <input type="submit" value="Submit">
         </form>
-      </div>
-    </div>
 
-    <div class="album py-5 bg-light">
-      <div class="container">
+        <br>
+        <br>
         <h3> My games </h3><br>
         <div class="row">
           {% for game in games %}
@@ -113,7 +111,6 @@
                     <button type="button" class="btn btn-sm btn-outline-secondary"id="gamesales" onclick="location.href='gamesales/{{game.gameid}}';">View sales</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="play" onclick="location.href='modify_game/{{game.gameid}}';">Edit</button>
                   </div>
-                  <small class="text-muted">9 mins</small>
                 </div>
               </div>
             </div>
