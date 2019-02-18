@@ -46,7 +46,7 @@
     <h1>{{game}}</h1>
 
     {#Any game can be added to a page in an iframe like this#}
-    <iframe src="{{game.URL}}" width = 1000 height = 500></iframe>
+    <iframe src="{{game.URL}}" width = 1000 height = 500 id="iframe"></iframe>
 
     {#This form is only used to create the URL to the page. Check listen_game.js for details.#}
     <form url="{% url 'hello:save_game' game.gameid %}" method="post" id="save_form">
@@ -54,6 +54,10 @@
     </form>
 
     <form url="{% url 'hello:submit_score' game.gameid %}" method="post" id="score_form">
+      {% csrf_token %}
+    </form>
+
+    <form url="{% url 'hello:load_game' game.gameid %}" method="get" id="load_form">
       {% csrf_token %}
     </form>
 

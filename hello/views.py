@@ -195,6 +195,45 @@ class GameDetailView(LoginRequiredMixin, generic.View):
             messages.add_message(request, messages.INFO, 'Access denied')
             return redirect('hello:home')
 
+class GameLoadView(LoginRequiredMixin, generic.DetailView):
+    model = Game
+    template_name = 'hello/gamedetail.html'
+    login_url = 'hello:login'
+
+    def get(self, *args, **kwargs):
+        try:
+
+            gameid = self.kwargs['pk']
+            game_states = GameState.objects.filter(gameid = gameid, userid=self.request.user)
+            newest_game_state = game_states.latest('timestamp').gameState
+            newest_game_state = newest_game_state.replace("\'", "\"")
+            python_state = json.loads(newest_game_state)
+
+            load_message = {
+                'messageType':"LOAD",
+                'gameState': python_state
+            }
+            return JsonResponse(load_message)
+        except GameState.DoesNotExist:
+            error_message = {
+                'messageType':"ERROR",
+                'info':'No gamestates found'
+            }
+            return JsonResponse(error_message)
+        except ValueError:
+            python_state = json.loads(newest_game_state.gameState)
+            error_message = {
+                'messageType':"ERROR",
+                'info':'Malformed load request'
+            }
+            return JsonResponse(error_message)
+        except KeyError:
+            error_message = {
+                'messageType':"ERROR",
+                'info':'Gamestate could not be loaded'
+            }
+            return JsonResponse(error_message)
+
 #View for saving gamestates. The save message is posted to this view using ajax
 class GameSaveView(LoginRequiredMixin, generic.DetailView):
 

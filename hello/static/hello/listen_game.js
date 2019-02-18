@@ -73,7 +73,27 @@ function saveGame(event) {
 
 //Load gameState from database and send it to the game
 function loadGame(event) {
+    var form = $("#load_form");
+    var url = form.attr('url');
 
+    $.ajax({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    },
+    type: "GET",
+    url: url,
+    data: JSON.stringify(event.data),
+    dataType: "json"
+    }).done(function(load_message) {
+
+        console.log(load_message);
+        //var targetWindow = HTMLIFrameElement.contentWindow
+        //var targetWindow = $('#iframe').contentWindow
+        event.source.postMessage(load_message, event.origin)
+
+    });
 }
 
 //Save score to the database
