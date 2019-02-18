@@ -527,7 +527,9 @@ class PaymentSuccessView(LoginRequiredMixin, generic.View):
 
     #Helper function for saving a purchase to the database
     def save_purchase(self, game, user, pid):
-        p = Purchases(pid = pid, gameid = game, userid = user, timestamp = datetime.now())
+        game.numberSold += 1
+        p = Purchases(pid = pid, gameid = game, userid = user, developerid = game.developerid, timestamp = datetime.now())
+        game.save()
         p.save()
 
 
