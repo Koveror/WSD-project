@@ -2,8 +2,6 @@ from django.urls import path
 
 from . import views
 
-#FIXME: Slugs for urls
-
 app_name = 'hello'
 urlpatterns = [
     path('home', views.HomeView.as_view(), name='home'),

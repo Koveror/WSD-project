@@ -51,7 +51,8 @@
 
       {% if not is_a_developer %}
         <p> You are not yet a developer. Would you like to become one? </p>
-        <form action="{% url 'hello:become_developer' %}">
+        <form action="{% url 'hello:become_developer' %}" method="post">
+          {% csrf_token %}
           <input type="submit" value="Yes" />
         </form>
       {% else %}

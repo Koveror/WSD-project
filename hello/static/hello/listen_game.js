@@ -32,11 +32,12 @@ window.addEventListener("message", receiveMessage, false);
 //This function receives the messages sent by the game
 function receiveMessage(event)
 {
-    if(event.origin !== "") {
-        //FIXME: Only execute messages from trustworthy sources
+    if(event.origin !== "http://webcourse.cs.hut.fi") {
+        //Only execute messages from trustworthy sources
     }
     var message = JSON.stringify(event.data);
     console.log("Received object: " + message);
+    console.log("Object was from: " + event.origin)
 
     if(event.data.messageType == "SAVE") {
         saveGame(event);
